@@ -38,6 +38,11 @@ groupRouter
 
     ctx.state.data = data;
   })
+  .get("/slug/:slug", async (ctx) => {
+    const data = await groupRepo.getBySlug(ctx.params.slug);
+
+    ctx.state.data = data;
+  })
   .post("/:id/add-member/:userId", async (ctx) => {
     await groupRepo.assignUserToGroup(ctx.params.id, ctx.params.userId);
 

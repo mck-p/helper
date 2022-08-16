@@ -95,6 +95,10 @@ class GroupsRepo {
       .first();
   }
 
+  getBySlug(slug: string) {
+    return this.#connection.from("groups").where({ slug }).select("*").first();
+  }
+
   getUsersForGroup(groupId: string) {
     return this.#connection
       .from("user_groups")
