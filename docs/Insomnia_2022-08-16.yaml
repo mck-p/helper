@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2022-08-16T17:26:15.747Z
+__export_date: 2022-08-16T18:02:40.264Z
 __export_source: insomnia.desktop.app:v2022.5.0
 resources:
   - _id: req_3b6086ffdd6144d392153dcb2db1afe7
@@ -55,6 +55,27 @@ resources:
     headers: []
     authentication: {}
     metaSortKey: -1660668744230.5
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_64c5239f312a47dba7c23d20ff24b414
+    parentId: fld_aba5df6ddcf541f38801046b65f4e6fc
+    modified: 1660672503397
+    created: 1660672499731
+    url: "{{ _.users }}/71d07697-a2e9-4c0d-a2ae-08e8d6188675/help-items"
+    name: Get Help Items for User
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668621684.25
     isPrivate: false
     settingStoreCookies: true
     settingSendCookies: true
@@ -125,9 +146,9 @@ resources:
     _type: request
   - _id: req_4b41e597e1e246df93436884ff87993d
     parentId: fld_08c189bda6b04deb849b835773c26384
-    modified: 1660670239971
+    modified: 1660672813843
     created: 1660670139117
-    url: "{{ _.groups }}/421be89a-c75a-42fd-883c-c82b4ebb1be2/members"
+    url: "{{ _.groups }}/3fa5db73-1300-444f-ba3b-5f09dff27bae/members"
     name: List Members of Group
     description: ""
     method: GET
@@ -154,11 +175,32 @@ resources:
     environmentPropertyOrder: null
     metaSortKey: -1651171954616.5
     _type: request_group
+  - _id: req_bd7f5870c8664921a2741223e1147fc1
+    parentId: fld_08c189bda6b04deb849b835773c26384
+    modified: 1660672914140
+    created: 1660672910374
+    url: "{{ _.groups }}/3fa5db73-1300-444f-ba3b-5f09dff27bae/help-items"
+    name: List Help Items of Group
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660669564220
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_5d4cc856e84d431d9b2b9870bbb62626
     parentId: fld_08c189bda6b04deb849b835773c26384
-    modified: 1660669901396
+    modified: 1660672809198
     created: 1660669718217
-    url: "{{ _.groups }}/421be89a-c75a-42fd-883c-c82b4ebb1be2"
+    url: "{{ _.groups }}/3fa5db73-1300-444f-ba3b-5f09dff27bae"
     name: Get By ID
     description: ""
     method: GET
@@ -175,12 +217,33 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_6a6502a961fc4ffe9a5c0c33d68b0188
+    parentId: fld_08c189bda6b04deb849b835773c26384
+    modified: 1660672789656
+    created: 1660672787611
+    url: "{{ _.groups }}/421be89a-c75a-42fd-883c-c82b4ebb1be2"
+    name: Delete By ID
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668866776.75
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_ad2e1efc8dd747b59bfeee792e90e6b2
     parentId: fld_08c189bda6b04deb849b835773c26384
-    modified: 1660670230210
+    modified: 1660672822303
     created: 1660670218510
     url: "{{ _.groups
-      }}/421be89a-c75a-42fd-883c-c82b4ebb1be2/add-member/71d07697-a2e9-4c0d-a2a\
+      }}/3fa5db73-1300-444f-ba3b-5f09dff27bae/add-member/71d07697-a2e9-4c0d-a2a\
       e-08e8d6188675"
     name: Add Member
     description: ""
@@ -223,7 +286,7 @@ resources:
     _type: request
   - _id: req_bb13bb9f152749eba614e087bbaaaea6
     parentId: fld_08c189bda6b04deb849b835773c26384
-    modified: 1660670276970
+    modified: 1660672816143
     created: 1660669718201
     url: "{{ _.groups }}"
     name: Create New Group
@@ -236,6 +299,136 @@ resources:
         	"slug": "roberts",
         	"name": "Roberts Family",
         	"description": "## Calling all Roberts!\n\nWe are the group that helps others!"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_927bf46bd14d4279aba69062c9c1469c
+    authentication: {}
+    metaSortKey: -1660667298995
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_89ff1517547c4888addb5c728a348217
+    parentId: fld_4112e5595ea34dbd8a98dd9a8784e3fc
+    modified: 1660672723203
+    created: 1660672693812
+    url: "{{ _.helpItems }}/e05f0e39-8e7e-427a-b370-fd964b4c09b8"
+    name: Delete Help Item
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660672693812
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_4112e5595ea34dbd8a98dd9a8784e3fc
+    parentId: wrk_8e082c59b83e448ca455f9ba020ac28a
+    modified: 1660671810276
+    created: 1660671810276
+    name: Help Items
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1646424284202.25
+    _type: request_group
+  - _id: req_30a38d1c7e2e4502bbea7288af826f2f
+    parentId: fld_4112e5595ea34dbd8a98dd9a8784e3fc
+    modified: 1660672849629
+    created: 1660672248242
+    url: "{{ _.helpItems
+      }}/3bbbbfb5-2c1f-4eaf-acf2-75a07c2fe180/add-helper/71d07697-a2e9-4c0d-a2a\
+      e-08e8d6188675"
+    name: Add Helper To Item
+    description: ""
+    method: POST
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660672248242
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_31b71653f47b403da4f3c9bf89a84642
+    parentId: fld_4112e5595ea34dbd8a98dd9a8784e3fc
+    modified: 1660672397413
+    created: 1660672382018
+    url: "{{ _.helpItems
+      }}/a2257795-f9d7-42aa-98cf-ed9fae1f2054/remove-helper/71d07697-a2e9-4c0d-\
+      a2ae-08e8d6188675"
+    name: Remove Helper From Item
+    description: ""
+    method: POST
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660671193679.5
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_ce8834ceba5b4d03acdc3673e55bf530
+    parentId: fld_4112e5595ea34dbd8a98dd9a8784e3fc
+    modified: 1660672011660
+    created: 1660671810294
+    url: "{{ _.helpItems }}/a2257795-f9d7-42aa-98cf-ed9fae1f2054"
+    name: Get By ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668989323
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_4fff3dac255e4d17921d1c49f16f86f3
+    parentId: fld_4112e5595ea34dbd8a98dd9a8784e3fc
+    modified: 1660672844145
+    created: 1660671810279
+    url: "{{ _.helpItems }}"
+    name: Add Help Item
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"title": "I need help launching Helper!",
+        	"description": "## Can you write code?\n\nDo you like to program or want to learn how to? **Then this is for you!**\n\nCome help Tim Roberts create _Helper_, an application to ensure that _**WE**_ are the hands and feet of God",
+        	"help_type": "general",
+        	"group_id": "3fa5db73-1300-444f-ba3b-5f09dff27bae"
         }
     parameters: []
     headers:
@@ -280,18 +473,20 @@ resources:
     _type: api_spec
   - _id: env_c59dc174de7f40a0a633fa742d6b3478
     parentId: env_e4cbaedaed2ac3f25731d19b7b997d6dc3ddd44d
-    modified: 1660669787979
+    modified: 1660671837826
     created: 1660667235513
     name: Local Dev
     data:
       api: http://localhost:5000
       users: "{{ _.api }}/users"
       groups: "{{ _.api }}/groups"
+      helpItems: "{{ _.api }}/help-items"
     dataPropertyOrder:
       "&":
         - api
         - users
         - groups
+        - helpItems
     color: null
     isPrivate: false
     metaSortKey: 1660667235513

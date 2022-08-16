@@ -28,6 +28,11 @@ groupRouter
 
     ctx.state.data = data;
   })
+  .get("/:id/help-items", async (ctx) => {
+    const data = await groupRepo.getHelpItemsForGroup(ctx.params.id);
+
+    ctx.state.data = data;
+  })
   .get("/:id/members", async (ctx) => {
     const data = await groupRepo.getUsersForGroup(ctx.params.id);
 
@@ -45,6 +50,13 @@ groupRouter
 
     ctx.state.data = {
       removed: true,
+    };
+  })
+  .delete("/:id", async (ctx) => {
+    await groupRepo.deleteById(ctx.params.id);
+
+    ctx.state.data = {
+      deleted: true,
     };
   });
 

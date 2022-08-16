@@ -51,6 +51,11 @@ userRouter
     const data = await userRepo.getGroupsForUser(ctx.params.id);
 
     ctx.state.data = data;
+  })
+  .get("/:id/help-items", async (ctx) => {
+    const data = await userRepo.getHelpItemsForUser(ctx.params.id);
+
+    ctx.state.data = data;
   });
 
 export default userRouter;

@@ -224,6 +224,14 @@ class UserRepo {
       .join("groups", "groups.id", "user_groups.group_id")
       .select("groups.*");
   }
+
+  getHelpItemsForUser(userId: string) {
+    return this.#connection
+      .from("helpers")
+      .where({ user_id: userId })
+      .join("help_items", "help_items.id", "helpers.help_item_id")
+      .select("help_items.*");
+  }
 }
 
 export default UserRepo;

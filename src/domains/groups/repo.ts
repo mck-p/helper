@@ -105,6 +105,15 @@ class GroupsRepo {
       .select("users.id", "users.email");
   }
 
+  getHelpItemsForGroup(groupId: string) {
+    return this.#connection
+      .from("help_items")
+      .where({
+        group_id: groupId,
+      })
+      .select("*");
+  }
+
   async assignUserToGroup(groupId: string, userId: string) {
     try {
       await this.#connection
@@ -130,6 +139,10 @@ class GroupsRepo {
         user_id: userId,
       })
       .delete();
+  }
+
+  async deleteById(id: string) {
+    await this.#connection.from("groups").where({ id }).delete();
   }
 }
 
