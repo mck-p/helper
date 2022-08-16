@@ -50,6 +50,17 @@ groupRouter
       added: true,
     };
   })
+  .post("/:id/request-access/:user_id/:sponsor_id", async (ctx) => {
+    await groupRepo.requestUserJoinGroup({
+      groupId: ctx.params.id,
+      userId: ctx.params.user_id,
+      sponsorId: ctx.params.sponsor_id,
+    });
+
+    ctx.state.data = {
+      added: true,
+    };
+  })
   .post("/:id/remove-member/:userId", async (ctx) => {
     await groupRepo.removeUserFromGroup(ctx.params.id, ctx.params.userId);
 

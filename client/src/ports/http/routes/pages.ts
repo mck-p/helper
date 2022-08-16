@@ -4,7 +4,6 @@ import * as API from "@app/ports/api";
 const pages = new Router();
 
 pages.get("/:slug/sign-up", async (ctx) => {
-  console.log("HELLO?");
   const group = await API.groups.getBySlug(ctx.params.slug);
 
   if (!group) {

@@ -1,14 +1,23 @@
-<header>
+<main class="grid-y grid-padding-y full">
+  <h1 class="text-center">Thanks for Being a Helper 👋</h1>
+  <form class="cell" action="/functions/sign-up" method="POST">
+    <div class="input_group">
+      <label for="email">
+        Your Email Address
+      </label>
+      <input name="email" type="email" id="email" required/>
+    </div>
 
-</header>
+    <div class="input_group">
+      <label for="sponsor">
+        Your Sponsor's Email
+      </label>
+      <input name="sponsor" type="email" id="sponsor" required />
+    </div>
 
-<main>
-  <h1>Hello and thanks for helping!</h1>
-  <form>
-    <input value=<%= group.id %> name="group-id" disabled />
+    <input value=<%= group.id %> name="groupId" hidden/>
+    <button type="submit" class="submit button">
+      Request Access
+    </button>
   </form>
 </main>
-
-<footer>
-
-</footer>

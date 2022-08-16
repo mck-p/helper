@@ -3,6 +3,7 @@ import validate from "@app/shared/validate";
 import * as Env from "@app/shared/env";
 
 import type { Schema } from "@app/shared/validate";
+import { string } from "getenv";
 
 class GroupWithSlugAlreadyExists extends Error {
   statusCode = 400;
@@ -22,6 +23,11 @@ const isGroupUniqueSlugError = (err: Error) =>
 const isTryingToAddUserTwiceToGroupError = (err: Error) =>
   err.message.includes(
     'duplicate key value violates unique constraint "user_groups_group_id_user_id_key"'
+  );
+
+const isTryingToRequestJoinGroupTwice = (err: Error) =>
+  err.message.includes(
+    `duplicate key value violates unique constraint "group_join_requests_user_id_group_id_key"`
   );
 
 const creationSchema: Schema = {
@@ -147,6 +153,50 @@ class GroupsRepo {
 
   async deleteById(id: string) {
     await this.#connection.from("groups").where({ id }).delete();
+  }
+
+  async requestUserJoinGroup({
+    groupId,
+    userId,
+    sponsorId,
+  }: {
+    groupId: string;
+    userId: string;
+    sponsorId: string;
+  }) {
+    try {
+      await this.#connection
+        .into("group_join_requests")
+        .insert({ group_id: groupId, user_id: userId, sponsor_id: sponsorId });
+    } catch (e: any) {
+      const err = e as Error;
+
+      // just swallow for now
+      if (isTryingToRequestJoinGroupTwice(err)) {
+        return;
+      }
+
+      throw err;
+    }
+  }
+
+  async removeRequestToJoinGroup({
+    groupId,
+    userId,
+    sponsorId,
+  }: {
+    groupId: string;
+    userId: string;
+    sponsorId: string;
+  }) {
+    await this.#connection
+      .from("group_join_requests")
+      .where({
+        group_id: groupId,
+        user_id: userId,
+        sponsor_id: sponsorId,
+      })
+      .delete();
   }
 }
 

@@ -9,6 +9,15 @@ const userRouter = new Router().use(BodyParser());
 const userRepo = new UserRepo(DB);
 
 userRouter
+  .get("/by-email/:email", async (ctx) => {
+    const data = await userRepo.getByEmail(ctx.params.email);
+
+    ctx.state.data = data;
+
+    ctx.state.meta = {
+      uri: `/users/${data.id}`,
+    };
+  })
   .post("/", async (ctx) => {
     const data = await userRepo.create(ctx.request.body);
 
