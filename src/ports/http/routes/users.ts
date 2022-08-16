@@ -36,6 +36,7 @@ userRouter
     ctx.state.data = {
       token,
     };
+
     ctx.state.statusCode = 200;
   })
   .get("/:id", async (ctx) => {
