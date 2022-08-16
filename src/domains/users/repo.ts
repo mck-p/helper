@@ -212,8 +212,8 @@ class UserRepo {
       .where({
         user_id: userId,
       })
-      .join("groups", "groups.od", "user_groups.group_id")
-      .select("*");
+      .join("groups", "groups.id", "user_groups.group_id")
+      .select("groups.*");
   }
 }
 

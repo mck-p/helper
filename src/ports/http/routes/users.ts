@@ -46,6 +46,11 @@ userRouter
     }
 
     ctx.state.data = data;
+  })
+  .get("/:id/groups", async (ctx) => {
+    const data = await userRepo.getGroupsForUser(ctx.params.id);
+
+    ctx.state.data = data;
   });
 
 export default userRouter;

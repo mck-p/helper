@@ -27,6 +27,25 @@ groupRouter
     }
 
     ctx.state.data = data;
+  })
+  .get("/:id/members", async (ctx) => {
+    const data = await groupRepo.getUsersForGroup(ctx.params.id);
+
+    ctx.state.data = data;
+  })
+  .post("/:id/add-member/:userId", async (ctx) => {
+    await groupRepo.assignUserToGroup(ctx.params.id, ctx.params.userId);
+
+    ctx.state.data = {
+      added: true,
+    };
+  })
+  .post("/:id/remove-member/:userId", async (ctx) => {
+    await groupRepo.removeUserFromGroup(ctx.params.id, ctx.params.userId);
+
+    ctx.state.data = {
+      removed: true,
+    };
   });
 
 export default groupRouter;

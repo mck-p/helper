@@ -19,6 +19,11 @@ const isGroupUniqueSlugError = (err: Error) =>
     'duplicate key value violates unique constraint "groups_slug_key"'
   );
 
+const isTryingToAddUserTwiceToGroupError = (err: Error) =>
+  err.message.includes(
+    'duplicate key value violates unique constraint "user_groups_group_id_user_id_key"'
+  );
+
 const creationSchema: Schema = {
   id: "$GroupsCreation",
   type: "object",
@@ -97,12 +102,34 @@ class GroupsRepo {
         group_id: groupId,
       })
       .join("users", "users.id", "user_groups.user_id")
-      .select(
-        "users.id as id",
-        "users.email as email",
-        "user.created_at as created_at",
-        "users.updated_at as updated_at"
-      );
+      .select("users.id", "users.email");
+  }
+
+  async assignUserToGroup(groupId: string, userId: string) {
+    try {
+      await this.#connection
+        .into("user_groups")
+        .insert({ group_id: groupId, user_id: userId });
+    } catch (e: any) {
+      const err = e as Error;
+
+      if (isTryingToAddUserTwiceToGroupError(err)) {
+        // it's okay, we got you fam. pretend it never happened
+        return;
+      }
+
+      throw err;
+    }
+  }
+
+  async removeUserFromGroup(groupId: string, userId: string) {
+    await this.#connection
+      .from("user_groups")
+      .where({
+        group_id: groupId,
+        user_id: userId,
+      })
+      .delete();
   }
 }
 
