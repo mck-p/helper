@@ -1,0 +1,15 @@
+version: '3'
+services:
+  database:
+    image: postgres
+    ports:
+      - "9999:5432"
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: helper
+  cache:
+    image: redis
+    command: redis-server --requirepass password
+    ports:
+      - "9998:6739"
