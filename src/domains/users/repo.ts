@@ -132,11 +132,20 @@ class UserRepo {
   async update(input: Pick<User, "email" | "password">) {
     validate(input, this.schemas.update);
 
+    const update = input;
+
+    if (update.password) {
+      update.password = await bcrypt.hash(input.email, 10);
+    }
+
     const [user] = await this.#connection
       .from("users")
       .where({
         email: input.email,
-        password: await bcrypt.hash(input.email, 10),
+      })
+      .update({
+        ...update,
+        updated_at: new Date().toISOString(),
       })
       .returning("*");
 
