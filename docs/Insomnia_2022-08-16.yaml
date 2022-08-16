@@ -1,0 +1,298 @@
+_type: export
+__export_format: 4
+__export_date: 2022-08-16T17:26:15.747Z
+__export_source: insomnia.desktop.app:v2022.5.0
+resources:
+  - _id: req_3b6086ffdd6144d392153dcb2db1afe7
+    parentId: fld_aba5df6ddcf541f38801046b65f4e6fc
+    modified: 1660669799031
+    created: 1660668989323
+    url: "{{ _.users }}/71d07697-a2e9-4c0d-a2ae-08e8d6188675"
+    name: Get By ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668989323
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_aba5df6ddcf541f38801046b65f4e6fc
+    parentId: wrk_8e082c59b83e448ca455f9ba020ac28a
+    modified: 1660667295445
+    created: 1660667295445
+    name: Users
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1660667295445
+    _type: request_group
+  - _id: wrk_8e082c59b83e448ca455f9ba020ac28a
+    parentId: null
+    modified: 1659647826422
+    created: 1659647826422
+    name: Helper
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_81cf63db11854f2f9c585c77c53a2e2d
+    parentId: fld_aba5df6ddcf541f38801046b65f4e6fc
+    modified: 1660670295423
+    created: 1660670292639
+    url: "{{ _.users }}/71d07697-a2e9-4c0d-a2ae-08e8d6188675/groups"
+    name: Get Groups for User
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668744230.5
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_d2de2c67f5194b27bb078cb7c69eaf53
+    parentId: fld_aba5df6ddcf541f38801046b65f4e6fc
+    modified: 1660670280478
+    created: 1660668008953
+    url: "{{ _.users }}/authenticate"
+    name: Authenticate User
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "tim@mck-p.com",
+        	"password": "123456"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_db3641804aa74189a127b55a7835f746
+    authentication: {}
+    metaSortKey: -1660668008953
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_658663cf583942359c331096b34ee701
+    parentId: fld_aba5df6ddcf541f38801046b65f4e6fc
+    modified: 1660670279955
+    created: 1660667298994
+    url: "{{ _.users }}"
+    name: Create New User
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "timis@mck-p.com",
+        	"password": "123456"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_927bf46bd14d4279aba69062c9c1469c
+    authentication: {}
+    metaSortKey: -1660667298995
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_4b41e597e1e246df93436884ff87993d
+    parentId: fld_08c189bda6b04deb849b835773c26384
+    modified: 1660670239971
+    created: 1660670139117
+    url: "{{ _.groups }}/421be89a-c75a-42fd-883c-c82b4ebb1be2/members"
+    name: List Members of Group
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660670139117
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_08c189bda6b04deb849b835773c26384
+    parentId: wrk_8e082c59b83e448ca455f9ba020ac28a
+    modified: 1660669729089
+    created: 1660669718197
+    name: Groups
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1651171954616.5
+    _type: request_group
+  - _id: req_5d4cc856e84d431d9b2b9870bbb62626
+    parentId: fld_08c189bda6b04deb849b835773c26384
+    modified: 1660669901396
+    created: 1660669718217
+    url: "{{ _.groups }}/421be89a-c75a-42fd-883c-c82b4ebb1be2"
+    name: Get By ID
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668989323
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_ad2e1efc8dd747b59bfeee792e90e6b2
+    parentId: fld_08c189bda6b04deb849b835773c26384
+    modified: 1660670230210
+    created: 1660670218510
+    url: "{{ _.groups
+      }}/421be89a-c75a-42fd-883c-c82b4ebb1be2/add-member/71d07697-a2e9-4c0d-a2a\
+      e-08e8d6188675"
+    name: Add Member
+    description: ""
+    method: POST
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668499138
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_dfa5be29c89e4c179a19aeadf56993aa
+    parentId: fld_08c189bda6b04deb849b835773c26384
+    modified: 1660670601841
+    created: 1660670600130
+    url: "{{ _.groups
+      }}/421be89a-c75a-42fd-883c-c82b4ebb1be2/remove-member/71d07697-a2e9-4c0d-\
+      a2ae-08e8d6188675"
+    name: Remove Member
+    description: ""
+    method: POST
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1660668254045.5
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_bb13bb9f152749eba614e087bbaaaea6
+    parentId: fld_08c189bda6b04deb849b835773c26384
+    modified: 1660670276970
+    created: 1660669718201
+    url: "{{ _.groups }}"
+    name: Create New Group
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"slug": "roberts",
+        	"name": "Roberts Family",
+        	"description": "## Calling all Roberts!\n\nWe are the group that helps others!"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_927bf46bd14d4279aba69062c9c1469c
+    authentication: {}
+    metaSortKey: -1660667298995
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_e4cbaedaed2ac3f25731d19b7b997d6dc3ddd44d
+    parentId: wrk_8e082c59b83e448ca455f9ba020ac28a
+    modified: 1660667234279
+    created: 1659647826460
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: {}
+    color: null
+    isPrivate: false
+    metaSortKey: 1659647826460
+    _type: environment
+  - _id: jar_e4cbaedaed2ac3f25731d19b7b997d6dc3ddd44d
+    parentId: wrk_8e082c59b83e448ca455f9ba020ac28a
+    modified: 1659647826461
+    created: 1659647826461
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: spc_48656971be19489c972f40c2aee6faed
+    parentId: wrk_8e082c59b83e448ca455f9ba020ac28a
+    modified: 1659647826443
+    created: 1659647826443
+    fileName: Helper
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: env_c59dc174de7f40a0a633fa742d6b3478
+    parentId: env_e4cbaedaed2ac3f25731d19b7b997d6dc3ddd44d
+    modified: 1660669787979
+    created: 1660667235513
+    name: Local Dev
+    data:
+      api: http://localhost:5000
+      users: "{{ _.api }}/users"
+      groups: "{{ _.api }}/groups"
+    dataPropertyOrder:
+      "&":
+        - api
+        - users
+        - groups
+    color: null
+    isPrivate: false
+    metaSortKey: 1660667235513
+    _type: environment
