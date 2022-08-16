@@ -11,6 +11,8 @@ export const handleTopLevelState: Middleware = async (ctx, next) => {
         ...ctx.state.meta,
       },
     };
+
+    ctx.status = ctx.state.statusCode || 500;
   }
 
   if (ctx.state.data) {
@@ -21,6 +23,8 @@ export const handleTopLevelState: Middleware = async (ctx, next) => {
         ...ctx.state.meta,
       },
     };
+
+    ctx.status = ctx.state.statusCode || 200;
   }
 };
 
