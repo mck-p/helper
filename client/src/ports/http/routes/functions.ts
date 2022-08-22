@@ -1,6 +1,7 @@
 import Router from "@koa/router";
 import Body from "koa-body";
 import * as API from "@app/ports/api";
+import { api } from "@app/shared/env";
 
 const functions = new Router().use(Body());
 
@@ -26,33 +27,50 @@ class EmailDoesNotExists extends Error {
   }
 }
 
-functions.post("/sign-up", async (ctx) => {
-  console.log("hello?");
-  const { body } = ctx.request;
+functions
+  .post("/sign-up", async (ctx) => {
+    const { body } = ctx.request;
 
-  if (!body.sponsor) {
-    throw new MustHaveSponsor();
-  }
+    if (!body.sponsor) {
+      throw new MustHaveSponsor();
+    }
 
-  const sponsor = await API.users.getByEmail(body.sponsor);
+    const sponsor = await API.users.getByEmail(body.sponsor);
 
-  if (!sponsor) {
-    throw new MustHaveSponsor(body.sponsor);
-  }
+    if (!sponsor) {
+      throw new MustHaveSponsor(body.sponsor);
+    }
 
-  const user = await API.users.getByEmail(body.email);
+    const user = await API.users.getByEmail(body.email);
 
-  if (!user) {
-    throw new EmailDoesNotExists(body.email);
-  }
+    if (!user) {
+      throw new EmailDoesNotExists(body.email);
+    }
 
-  await API.groups.requestAccess({
-    groupId: body.groupId,
-    userId: user.id,
-    sponsorId: sponsor.id,
+    await API.groups.requestAccess({
+      groupId: body.groupId,
+      userId: user.id,
+      sponsorId: sponsor.id,
+    });
+
+    await ctx.render("groups/sign-up-success");
+  })
+  .post("/email-request", async (ctx) => {
+    const { body } = ctx.request;
+
+    if (!body.email) {
+      const err = new Error(
+        "Must send email in order to request access."
+      ) as Error & { statusCode: number };
+
+      err.statusCode = 400;
+
+      throw err;
+    }
+
+    await API.groups.requestDemo(body.email);
+
+    await ctx.render("groups/request-demo-success");
   });
-
-  await ctx.render("groups/sign-up-success");
-});
 
 export default functions;

@@ -19,6 +19,13 @@ groupRouter
       uri: `/groups/${data.id}`,
     };
   })
+  .post("/request-demo", async (ctx) => {
+    const data = await groupRepo.requestDemo(ctx.request.body.email);
+
+    ctx.state.data = {
+      requested: true,
+    };
+  })
   .get("/:id", async (ctx) => {
     const data = await groupRepo.getById(ctx.params.id);
 

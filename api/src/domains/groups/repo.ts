@@ -30,6 +30,11 @@ const isTryingToRequestJoinGroupTwice = (err: Error) =>
     `duplicate key value violates unique constraint "group_join_requests_user_id_group_id_key"`
   );
 
+const isTryingToReRequestAccess = (err: Error) =>
+  err.message.includes(
+    `duplicate key value violates unique constraint "new_group_requests_email_key"`
+  );
+
 const creationSchema: Schema = {
   id: "$GroupsCreation",
   type: "object",
@@ -197,6 +202,22 @@ class GroupsRepo {
         sponsor_id: sponsorId,
       })
       .delete();
+  }
+
+  async requestDemo(email: string) {
+    try {
+      await this.#connection.into("new_group_requests").insert({
+        email,
+      });
+    } catch (e: unknown) {
+      const err = e as Error;
+
+      if (isTryingToReRequestAccess(err)) {
+        return;
+      }
+
+      throw err;
+    }
   }
 }
 

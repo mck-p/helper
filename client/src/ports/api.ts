@@ -25,6 +25,10 @@ export const groups = {
         `${Env.api.urlBase}/groups/${request.groupId}/request-access/${request.userId}/${request.sponsorId}`
       )
       .then(APIDewrap),
+  requestDemo: (email: string) =>
+    axios
+      .post(`${Env.api.urlBase}/groups/request-demo`, { email })
+      .then(APIDewrap),
 };
 
 export const users = {
