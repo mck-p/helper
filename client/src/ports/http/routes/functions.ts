@@ -175,6 +175,18 @@ functions
 
       await ctx.redirect(`/${group.slug}/help-items/${result.id}`);
     }
-  );
+  )
+  .post("/offer-help", Middleware.mustBeAuthenticated, Body(), async (ctx) => {
+    await API.helpItems.offerHelp({
+      help_item: ctx.request.body.help_item,
+      user_id: ctx.user.id,
+    });
+
+    const group = await API.groups.getById(ctx.request.body.group_id);
+
+    await ctx.redirect(
+      `/${group.slug}/help-items/${ctx.request.body.help_item}`
+    );
+  });
 
 export default functions;

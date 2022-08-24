@@ -5,6 +5,14 @@
 The goal of Helper is to ensure that I am able to be the Hands and Feet of God
 and to help others do the same.
 
+## Screenshots
+
+![Dashboard](./artifacts/Screenshot%20from%202022-08-24%2018.12.24.png)
+
+![Create Help Item](./artifacts/Screenshot%20from%202022-08-24%2018.13.02.png)
+
+![View Help Item](./artifacts/Screenshot%20from%202022-08-24%2018.12.50.png)
+
 ## Development
 
 We have split the Client and the API. The Client is responsible for serving the

@@ -90,8 +90,12 @@ pages
       return ctx.redirect("/dashboard");
     }
 
+    const helpers = await API.helpItems.getHelpersForHelpItem(ctx.params.id);
+
     await ctx.render("help-item/single", {
       helpItem: HelpItems.clean(helpItem),
+      user: ctx.user,
+      helpers,
     });
   })
   .get("/:slug/sign-up", async (ctx) => {

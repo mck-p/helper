@@ -145,6 +145,15 @@ class HelpItemRepo {
       .delete();
   }
 
+  getHelpersForItem(itemId: string) {
+    return this.#connection
+      .from("help_items")
+      .where("help_items.id", "=", itemId)
+      .join("helpers", "helpers.help_item_id", "help_items.id")
+      .join("users", "users.id", "helpers.user_id")
+      .select(["users.id", "users.email", "users.meta"]);
+  }
+
   async deleteById(id: string) {
     await this.#connection
       .from("help_items")

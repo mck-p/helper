@@ -99,4 +99,12 @@ export const helpItems = {
         creator_id: user_id,
       })
       .then(APIDewrap),
+  offerHelp: ({ help_item, user_id }: any) =>
+    axios
+      .post(`${Env.api.urlBase}/help-items/${help_item}/add-helper/${user_id}`)
+      .then(APIDewrap),
+  getHelpersForHelpItem: (help_item: string) =>
+    axios
+      .get(`${Env.api.urlBase}/help-items/${help_item}/helpers`)
+      .then(APIDewrap),
 };

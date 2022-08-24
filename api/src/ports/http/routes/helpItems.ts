@@ -21,6 +21,11 @@ helpItemsRouter
 
     ctx.state.data = data;
   })
+  .get("/:id/helpers", async (ctx) => {
+    const data = await helpItemRepo.getHelpersForItem(ctx.params.id);
+
+    ctx.state.data = data;
+  })
   .post("/:id/add-helper/:user_id", async (ctx) => {
     await helpItemRepo.addHelperToItem(ctx.params.id, ctx.params.user_id);
 
