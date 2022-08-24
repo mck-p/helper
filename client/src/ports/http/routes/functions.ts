@@ -1,7 +1,9 @@
+import { URL } from "url";
+
 import Router from "@koa/router";
 import Body from "koa-body";
 import * as API from "@app/ports/api";
-import { api } from "@app/shared/env";
+import { AxiosError } from "axios";
 
 const functions = new Router().use(Body());
 
@@ -28,7 +30,7 @@ class EmailDoesNotExists extends Error {
 }
 
 functions
-  .post("/sign-up", async (ctx) => {
+  .post("/group-sign-up", async (ctx) => {
     const { body } = ctx.request;
 
     if (!body.sponsor) {
@@ -55,6 +57,46 @@ functions
 
     await ctx.render("groups/sign-up-success");
   })
+  .post("/user-sign-up", async (ctx) => {
+    const { body } = ctx.request;
+    try {
+      await API.users.signup(body);
+
+      ctx.cookies.set(
+        "authentication",
+        await API.users.authenticate(body).then(({ token }) => token),
+        {
+          httpOnly: true,
+        }
+      );
+
+      await ctx.redirect("/dashboard");
+    } catch (e) {
+      const redirectURL = new URL("http://localhost");
+
+      redirectURL.searchParams.append("email", body.email);
+      redirectURL.searchParams.append("referral", body.referral_email);
+      redirectURL.searchParams.append("name", body.name);
+
+      if (e instanceof AxiosError) {
+        redirectURL.searchParams.append("error-type", "email-in-use");
+
+        redirectURL.searchParams.append(
+          "error-message",
+          e.response?.data.error.message
+        );
+      } else {
+        redirectURL.searchParams.append("error-type", "unknown");
+
+        redirectURL.searchParams.append(
+          "error-message",
+          "Something went wrong. Please try your request again later."
+        );
+      }
+
+      await ctx.redirect(`/sign-up${redirectURL.search}`);
+    }
+  })
   .post("/email-request", async (ctx) => {
     const { body } = ctx.request;
 
@@ -71,6 +113,17 @@ functions
     await API.groups.requestDemo(body.email);
 
     await ctx.render("groups/request-demo-success");
+  })
+  .post("/login", async (ctx) => {
+    ctx.cookies.set(
+      "authentication",
+      await API.users.authenticate(ctx.request.body).then(({ token }) => token),
+      {
+        httpOnly: true,
+      }
+    );
+
+    await ctx.redirect("/dashboard");
   });
 
 export default functions;

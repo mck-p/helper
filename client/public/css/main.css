@@ -115,6 +115,16 @@ body > main {
   margin: 0 auto;
 }
 
+
+p.centered {
+  max-width: 35rem;
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+}
+
+
 footer p {
   font-size: 0.75rem;
   padding: 1rem;

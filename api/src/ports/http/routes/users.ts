@@ -22,7 +22,9 @@ userRouter
     const data = await userRepo.create(ctx.request.body);
 
     ctx.state.data = data;
+
     ctx.state.statusCode = 201;
+
     ctx.state.meta = {
       uri: `/users/${data.id}`,
     };
@@ -54,6 +56,16 @@ userRouter
     if (!data) {
       throw new Errors.ResourceNotFound("User", ctx.params.id);
     }
+
+    ctx.state.data = data;
+  })
+  .patch("/:id", async (ctx) => {
+    const data = await userRepo.update(ctx.params.id, ctx.request.body);
+
+    ctx.state.data = data;
+  })
+  .patch("/:id/meta", async (ctx) => {
+    const data = await userRepo.updateMeta(ctx.params.id, ctx.request.body);
 
     ctx.state.data = data;
   })

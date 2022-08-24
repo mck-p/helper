@@ -34,4 +34,31 @@ export const groups = {
 export const users = {
   getByEmail: (email: string): Promise<{ id: string }> =>
     axios.get(`${Env.api.urlBase}/users/by-email/${email}`).then(APIDewrap),
+  getById: (id: string): Promise<{ id: string }> =>
+    axios.get(`${Env.api.urlBase}/users/${id}`).then(APIDewrap),
+  signup: ({
+    email,
+    password,
+    name,
+    referral,
+  }: {
+    email: string;
+    password: string;
+    name: string;
+    referral: string;
+  }) =>
+    axios
+      .post(`${Env.api.urlBase}/users`, {
+        email,
+        password,
+        referral_email: referral,
+        meta: {
+          name,
+        },
+      })
+      .then(APIDewrap),
+  authenticate: ({ email, password }: { email: string; password: string }) =>
+    axios
+      .post(`${Env.api.urlBase}/users/authenticate`, { email, password })
+      .then(APIDewrap),
 };

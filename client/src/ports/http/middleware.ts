@@ -1,4 +1,9 @@
 import type { Middleware } from "koa";
+import { verify } from "jsonwebtoken";
+
+import * as Errors from "./errors";
+import * as API from "@app/ports/api";
+import * as Env from "@app/shared/env";
 
 export const handleTopLevelState: Middleware = async (ctx, next) => {
   await next();
@@ -61,3 +66,58 @@ export const handelValidationErrors: Middleware = async (ctx, next) => {
     throw e;
   }
 };
+
+export const updateMeta: Middleware = (ctx, next) => {
+  ctx.state.meta = {};
+
+  ctx.updateMeta = (update: { [x: string]: any }) => {
+    ctx.state.meta = Object.assign({}, ctx.state.meta, update);
+  };
+
+  return next();
+};
+
+export const addQueryToView: Middleware = (ctx, next) => {
+  ctx.state.meta.query = ctx.query;
+
+  return next();
+};
+
+export const authenticateByCookie: Middleware = async (ctx, next) => {
+  try {
+    const token = ctx.cookies.get("authentication");
+
+    if (!token) {
+      return next();
+    }
+
+    const { data } = (await verify(token, Env.jwtSecret)) as any;
+    const { id } = data;
+
+    const user = await API.users.getById(id);
+
+    ctx.user = user;
+
+    return next();
+  } catch (e) {
+    return next();
+  }
+};
+
+export const mustBeAuthenticated: Middleware = (ctx, next) => {
+  if (!ctx.user) {
+    return ctx.redirect("/login");
+  } else {
+    return next();
+  }
+};
+
+export const renderPage =
+  (pageName: string, meta?: { [x: string]: any }): Middleware =>
+  async (ctx) => {
+    if (meta) {
+      ctx.updateMeta(meta);
+    }
+
+    await ctx.render(pageName);
+  };

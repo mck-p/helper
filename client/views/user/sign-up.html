@@ -1,0 +1,116 @@
+<main class="grid-y grid-padding-y full text-center">
+  <h2>Thanks for being a Helper!</h2>
+  <p class="centered">
+    It means the world to us that you want to join <strong>Helper</strong>
+    and find ways to change your community! Signing up for <strong>Helper</strong>
+    helps you help others and we're so glad that you would choose to do that.
+  </p>
+  <p class="centered">
+    We are currently in a closed testing phase and are creating Groups on an
+    invite-only basis. However, we encourage you to sign up and fill out your
+    Profile now while you wait for your Groups to be created.
+  </p>
+  <p class="centered">
+    If you want to request to create a Group in this testing phase, we would
+    love to hear from you!
+    <a href="/#request-access">
+      Request access
+    </a> today and someone from our team will reach out shortly with next steps!
+  </p>
+  <p class="centered">
+    If you are interested in how we use any information we receive from you
+    or what data we collect about your visits to <strong>Helper</strong>, you
+    can look at our <a href="/privacy-policy" target="_blank">Privacy Policy</a>.
+  </p>
+  <form class="sign-up" action="/functions/user-sign-up" method="POST">
+    <div class="input_group">
+      <label for="email">Email*</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        placeholder="sally@email.co" 
+        aria-describedby="email-error-text"
+        value="<%- meta?.query?.email %>"
+        required
+      />
+    </div>
+    <% if (meta?.query?.['error-type'] === 'email-in-use') { %>
+      <p class="help-text" id="email-error-text">
+        <%- meta?.query?.['error-message'] %>
+      </p>
+    <% } %>
+    <div class="input_group">
+      <label for="password">Password*</label>
+      <input type="password" id="password" name="password" required />
+    </div>
+    <div class="input_group">
+      <label for="confirm">Confirm Password*</label>
+      <input type="password" id="confirm" name="confirm" required />
+    </div>
+    <div class="input_group">
+      <label for="name">Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name" 
+        placeholder="Sally Sue" 
+        value="<%- meta?.query?.name %>" 
+      />
+    </div>
+    <div class="input_group">
+      <label for="referral_email">Referral Email</label>
+      <input 
+        type="email" 
+        id="referral_email" 
+        name="referral_email" 
+        placeholder="joe@email.co" 
+        value="<%- meta?.query?.referral %>"
+      />
+    </div>
+    <button class="button submit" type="sbmit">
+      Sign Up
+    </button>
+  </form>
+</main>
+<div class="reveal" id="error-modal" data-reveal>
+  
+</div>
+<script>
+  window.addEventListener('load', () => {
+    const form = document.querySelector('form')
+    const pass = document.getElementById('password')
+    const confirm = document.getElementById('confirm')
+
+
+    const failedSubmit = (e, message) => {
+      e.preventDefault()
+      
+
+
+      pass.value = ''
+      confirm.value = ''
+      const $el = $('#error-modal')
+      
+      $el.html(`
+      <h1>There was an issue</h1>
+      <p class="lead">${message}</p>`)
+
+      const popup = new Foundation.Reveal($el);
+      
+      popup.open();
+    }
+
+    form.addEventListener('submit', e => {
+      const data = new FormData(e.target)
+
+      if (data.get('password') !== data.get('confirm')) {
+        failedSubmit(e, 'Passwords do not match. Please try again.')
+      }
+
+      if (data.get('password').length < 6) {
+        failedSubmit(e, 'Passwords must be at least 6 characters long. Please modify your password and try again.')
+      }
+    })
+  })
+</script>

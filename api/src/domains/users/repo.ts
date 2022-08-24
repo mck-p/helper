@@ -17,8 +17,7 @@ class UserAlreadyExists extends Error {
 }
 
 const isEmailUniqueKeyFailure = (err: Error) =>
-  err.message ===
-  `insert into \"users\" (\"email\", \"password\") values ($1, $2) returning * - duplicate key value violates unique constraint \"users_email_key\"`;
+  err.message.includes(`duplicate key value violates unique constraint`);
 
 const creationSchema: Schema = {
   id: "$UserCreation",
@@ -37,6 +36,11 @@ const creationSchema: Schema = {
       description:
         "The plaintext password of the user. Will be hashed before saving",
       minLength: 6,
+    },
+    referral_email: {
+      type: "string",
+      format: "email",
+      description: "The email of the person that referred this user to Helper",
     },
   },
 };
@@ -86,6 +90,8 @@ interface User {
   id: string;
   email: string;
   password: string;
+  referral_email?: string;
+  meta: { [x: string]: any };
   created_at: Date;
   updated_at: Date;
 }
@@ -107,12 +113,14 @@ class UserRepo {
     try {
       validate(input, this.schemas.create);
 
+      const userInput = {
+        ...input,
+        password: await bcrypt.hash(input.password, 10),
+      };
+
       const [user] = await this.#connection
         .into("users")
-        .insert({
-          email: input.email,
-          password: await bcrypt.hash(input.password, 10),
-        })
+        .insert(userInput)
         .returning("*");
 
       delete user.password;
@@ -129,7 +137,7 @@ class UserRepo {
     }
   }
 
-  async update(input: Pick<User, "email" | "password">) {
+  async update(id: string, input: Pick<User, "email" | "password">) {
     validate(input, this.schemas.update);
 
     const update = input;
@@ -141,7 +149,7 @@ class UserRepo {
     const [user] = await this.#connection
       .from("users")
       .where({
-        email: input.email,
+        id,
       })
       .update({
         ...update,
@@ -152,6 +160,26 @@ class UserRepo {
     delete user.password;
 
     return user;
+  }
+
+  async updateMeta(id: string, newMeta: { [x: string]: any }) {
+    const { meta } = await this.#connection
+      .from("users")
+      .where({ id })
+      .select(["id", "meta"])
+      .first();
+
+    const [updated] = await this.#connection
+      .from("users")
+      .where({ id })
+      .update({
+        meta: Object.assign({}, meta, newMeta),
+      })
+      .returning("*");
+
+    delete updated.password;
+
+    return updated;
   }
 
   async passwordsMatch(input: Pick<User, "email" | "password">) {

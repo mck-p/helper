@@ -23,6 +23,9 @@ server
   .use(Middleware.handleTopLevelState)
   .use(Middleware.handleStateErrors)
   .use(Middleware.handelValidationErrors)
+  .use(Middleware.updateMeta)
+  .use(Middleware.addQueryToView)
+  .use(Middleware.authenticateByCookie)
   .use(
     logger({
       logger: Log.child({}),
