@@ -15,6 +15,8 @@ export const groups = {
     axios
       .get(`${Env.api.urlBase}/groups/slug/${encodeURIComponent(slug)}`)
       .then(APIDewrap),
+  getById: (id: string) =>
+    axios.get(`${Env.api.urlBase}/groups/${id}`).then(APIDewrap),
   requestAccess: (request: {
     userId: string;
     sponsorId: string;
@@ -61,4 +63,18 @@ export const users = {
     axios
       .post(`${Env.api.urlBase}/users/authenticate`, { email, password })
       .then(APIDewrap),
+  getHelpItemsByUserId: (id: string, query?: string) =>
+    axios
+      .get(`${Env.api.urlBase}/users/${id}/help-items?${query}`)
+      .then(APIDewrap),
+
+  userIsInGroup: (userId: string, slug: string) =>
+    axios
+      .get(`${Env.api.urlBase}/users/${userId}/in-group/${slug}`)
+      .then(APIDewrap),
+};
+
+export const helpItems = {
+  getById: (id: string) =>
+    axios.get(`${Env.api.urlBase}/help-items/${id}`).then(APIDewrap),
 };

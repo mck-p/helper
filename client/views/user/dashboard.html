@@ -1,6 +1,58 @@
-<main class="grid-y grid-padding-y full">
+<main class="grid-y grid-padding-y full dashboard">
   <h1 class="text-center">Hello <%= user.meta.name %> 👋</h1>
   <h3 class="text-center">
     Welcome to your dashboard
   </h3>
+  <ul class="grid-x grid-margin-x small-up-1 large-up-3 accordion" data-accordion data-multi-expand="true"
+    data-allow-all-closed="true">
+    <li class="cell card accordion-item is-active" data-accordion-item>
+      <a href="#" class="accordian-title">
+        <div class="card-divider text-center">
+          <h3>Upcoming Help Items</h3>
+        </div>
+      </a>
+      <% if (!upcomingHelpItems.length) { %>
+      <div class="text-center card-section accordion-content grid-x small-up-1" data-tab-content>
+        <h5>You have no help items. Go to your Groups' dashboards and see where you can help.</h5>
+        </di>
+        <% } else { %>
+        <div class="card-section accordion-content accordion grid-x small-up-1 large-up-3" data-tab-content
+          data-accordion data-multi-expand="true" data-allow-all-closed="true">
+
+          <% upcomingHelpItems.forEach(helpItem => { %>
+          <div class="card accordion-item" data-accordion-item>
+            <a href="#" class="accordian-title">
+              <div class="card-divider text-center">
+                <h4><%- helpItem.title %></h4>
+              </div>
+            </a>
+            <div class="card-section  accordion-content" data-tab-content>
+              <%- helpItem.description %>
+              <a href="/<%- groups[helpItem.group_id].slug %>/help-items/<%- helpItem.id %>" class="button">
+                See Item
+              </a>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+        <% } %>
+    </li>
+    <li class="cell card accordion-item" data-accordion-item>
+      <a href="#" class="accordian-title">
+        <div class="card-divider text-center ">
+          <h3>Message Center</h3>
+        </div>
+      </a>
+      <div class="card-section accordion-content" data-tab-content>
+        <h5>Messages coming soon!</h5>
+      </div>
+    </li>
+  </ul>
 </main>
+<script>
+  window.addEventListener('load', () => {
+    $('.accordion').each((_, el) => {
+      new Foundation.Accordion($(el))
+    })
+  })
+</script>

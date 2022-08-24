@@ -129,3 +129,21 @@ footer p {
   font-size: 0.75rem;
   padding: 1rem;
 }
+
+.dashboard {
+  width: 90%;
+  margin: 0 auto;
+  padding: 1rem;
+  max-width: 1200px;
+}
+
+.dashboard .card {
+  border: 1px solid rgba(33, 33, 33, 0.25);
+  border-radius: 4.5px;
+}
+
+.help-item {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}

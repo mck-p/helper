@@ -1,8 +1,8 @@
 import Router from "@koa/router";
-import { verify } from "jsonwebtoken";
 import * as API from "@app/ports/api";
-import * as Env from "@app/shared/env";
 import * as Middleware from "@app/ports/http/middleware";
+import * as ViewModifiers from "@app/shared/view-modifiers";
+import * as HelpItems from "@app/domains/help-items";
 
 const pages = new Router();
 
@@ -19,11 +19,56 @@ pages
       title: "Dashboard",
     });
 
-    await ctx.render("user/dashboard", { user: ctx.user });
+    const helpItems = await API.users.getHelpItemsByUserId(
+      ctx.user.id,
+      `after=now&limit=10`
+    );
+
+    const groupIds: Set<string> = new Set(
+      helpItems.map(({ group_id }: { group_id: string }) => group_id)
+    );
+
+    const groups = await Promise.all(
+      [...groupIds.values()].map((id) => API.groups.getById(id))
+    ).then((groups) =>
+      groups.reduce(
+        (a, c) => ({
+          ...a,
+          [c.id]: c,
+        }),
+        {}
+      )
+    );
+
+    await ctx.render("user/dashboard", {
+      user: ctx.user,
+      upcomingHelpItems: helpItems.map(HelpItems.clean),
+      groups,
+    });
   })
   .get("/logout", (ctx) => {
     ctx.cookies.set("authentication", "");
     ctx.redirect("/login");
+  })
+  .get("/:slug/help-items/:id", Middleware.mustBeAuthenticated, async (ctx) => {
+    const isInGroup = await API.users.userIsInGroup(
+      ctx.user.id,
+      ctx.params.slug
+    );
+
+    if (!isInGroup) {
+      return ctx.redirect("/dashboard");
+    }
+
+    const helpItem = await API.helpItems.getById(ctx.params.id);
+
+    if (!helpItem) {
+      return ctx.redirect("/dashboard");
+    }
+
+    await ctx.render("help-item/single", {
+      helpItem: HelpItems.clean(helpItem),
+    });
   })
   .get("/:slug/sign-up", async (ctx) => {
     const group = await API.groups.getBySlug(ctx.params.slug);

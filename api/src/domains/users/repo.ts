@@ -253,12 +253,44 @@ class UserRepo {
       .select("groups.*");
   }
 
-  getHelpItemsForUser(userId: string) {
+  getHelpItemsForUser(userId: string, query: { [x: string]: any }) {
+    const args: { [x: string]: any } = {
+      limit: query.limit ?? 10,
+    };
+
+    if (query.after) {
+      if (query.after === "now") {
+        args.after = new Date().toISOString();
+      } else {
+        args.after = query.after;
+      }
+    }
+
     return this.#connection
       .from("helpers")
       .where({ user_id: userId })
+      .andWhere((builder) => {
+        if (args.after) {
+          builder.where("end_at", ">", args.after);
+        }
+
+        return builder.orWhereNull("end_at");
+      })
       .join("help_items", "help_items.id", "helpers.help_item_id")
-      .select("help_items.*");
+      .select("help_items.*")
+      .limit(args.limit)
+      .orderBy("help_items.created_at", "DESC");
+  }
+
+  isUserInGroup(userId: string, groupId: string) {
+    return this.#connection
+      .from("user_groups")
+      .where({
+        user_id: userId,
+        group_id: groupId,
+      })
+      .select("user_id")
+      .then((data) => data.length > 0);
   }
 }
 

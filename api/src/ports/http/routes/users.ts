@@ -2,11 +2,13 @@ import Router from "@koa/router";
 import BodyParser from "koa-body";
 import DB from "@app/ports/database";
 import UserRepo from "@app/domains/users/repo";
+import GroupRepo from "@app/domains/groups/repo";
 import * as Errors from "@app/ports/http/errors";
 
 const userRouter = new Router().use(BodyParser());
 
 const userRepo = new UserRepo(DB);
+const groupRepo = new GroupRepo(DB);
 
 userRouter
   .get("/by-email/:email", async (ctx) => {
@@ -59,6 +61,15 @@ userRouter
 
     ctx.state.data = data;
   })
+  .get("/:id/in-group/:slug", async (ctx) => {
+    const group = await groupRepo.getBySlug(ctx.params.slug);
+    if (!group) {
+      ctx.state.data = false;
+      return;
+    }
+
+    ctx.state.data = await userRepo.isUserInGroup(ctx.params.id, group.id);
+  })
   .patch("/:id", async (ctx) => {
     const data = await userRepo.update(ctx.params.id, ctx.request.body);
 
@@ -75,7 +86,7 @@ userRouter
     ctx.state.data = data;
   })
   .get("/:id/help-items", async (ctx) => {
-    const data = await userRepo.getHelpItemsForUser(ctx.params.id);
+    const data = await userRepo.getHelpItemsForUser(ctx.params.id, ctx.query);
 
     ctx.state.data = data;
   });
