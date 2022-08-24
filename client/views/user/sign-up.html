@@ -36,7 +36,7 @@
       />
     </div>
     <% if (meta?.query?.['error-type'] === 'email-in-use') { %>
-      <p class="help-text" id="email-error-text">
+      <p class="help-text callout alert" id="email-error-text">
         <%- meta?.query?.['error-message'] %>
       </p>
     <% } %>

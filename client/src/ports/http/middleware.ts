@@ -77,6 +77,23 @@ export const updateMeta: Middleware = (ctx, next) => {
   return next();
 };
 
+export const addScripts: Middleware = (ctx, next) => {
+  ctx.state.scripts = {
+    head: new Set(),
+    tail: new Set(),
+  };
+
+  ctx.addHeadScript = (scriptLocation: string) => {
+    ctx.state.scripts.head.add(scriptLocation);
+  };
+
+  ctx.addTailScript = (scriptLocation: string) => {
+    ctx.state.scripts.tail.add(scriptLocation);
+  };
+
+  return next();
+};
+
 export const addQueryToView: Middleware = (ctx, next) => {
   ctx.state.meta.query = ctx.query;
 

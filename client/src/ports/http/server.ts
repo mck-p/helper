@@ -24,6 +24,7 @@ server
   .use(Middleware.handleStateErrors)
   .use(Middleware.handelValidationErrors)
   .use(Middleware.updateMeta)
+  .use(Middleware.addScripts)
   .use(Middleware.addQueryToView)
   .use(Middleware.authenticateByCookie)
   .use(

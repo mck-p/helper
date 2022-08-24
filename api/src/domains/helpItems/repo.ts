@@ -52,6 +52,11 @@ const creationSchema: Schema = {
       description:
         "Random Key/Values pairings that may hold more data depending on the request",
     },
+    image: {
+      type: "string",
+      format: "url",
+      description: "The URL for the image to use as the headliner",
+    },
   },
 };
 
@@ -65,6 +70,7 @@ export interface HelpItem {
   meta: {
     [x: string]: any;
   };
+  image?: string;
   group_id: string;
 }
 
@@ -82,7 +88,13 @@ class HelpItemRepo {
   async create(
     input: Pick<
       HelpItem,
-      "title" | "description" | "end_at" | "help_type" | "meta" | "group_id"
+      | "title"
+      | "description"
+      | "end_at"
+      | "help_type"
+      | "meta"
+      | "group_id"
+      | "image"
     >
   ) {
     validate(input, this.schemas.create);

@@ -1,4 +1,7 @@
 <main class="grid-y grid-padding-y full help-item">
+  <% if (helpItem.image) { %>
+    <img src="<%- helpItem.image%>" alt="<%- helpItem.title%> Main Image" />
+  <% } %>
   <h1><%= helpItem.title %></h1>
   <%- helpItem.description %>
 </main>

@@ -1,0 +1,54 @@
+<main class="grid-y grid-padding-y full">
+  <h1 class="text-center">How can we help you?</h1>
+  <form class="cell help-item" action="/functions/help-items" method="POST" enctype="multipart/form-data">
+    <div>
+      <label for="image" class="button">
+        Headline Image
+      </label>
+      <input type="file" name="image" id="image" class="show-for-sr" />
+    </div>
+
+    <div class="input_group">
+      <label for="title">
+        Title*
+      </label>
+      <input name="title" type="text" id="title" required />
+    </div>
+    <div class="input_group">
+      <label for="description">
+        Description
+      </label>
+      <!--
+        This will be replaced with a tiny.mce instance
+        and be all cool and stuff
+      -->
+      <textarea 
+        name="description"
+        id="description"
+      ></textarea>
+    </div>
+
+    <div class="input_group">
+      <label>Help Type
+        <select>
+          <option value="general">General</option>
+          <option value="financial">Financial</option>
+          <option value="time">Time</option>
+        </select>
+      </label>
+    </div>
+
+    <div>
+      <label for="help_time">
+        When is this needed?
+      </label>
+      <input type="datetime-local" name="help_time" id="help_time" />
+    </div>
+
+    <input value=<%= group.id %> name="group_id" hidden />
+
+    <button type="submit" class="submit button">
+      Request Help
+    </button>
+  </form>
+</main>

@@ -77,4 +77,26 @@ export const users = {
 export const helpItems = {
   getById: (id: string) =>
     axios.get(`${Env.api.urlBase}/help-items/${id}`).then(APIDewrap),
+  create: ({
+    title,
+    description,
+    group_id,
+    user_id,
+    image,
+  }: {
+    title: string;
+    description: string;
+    group_id: string;
+    user_id: string;
+    image: string;
+  }) =>
+    axios
+      .post(`${Env.api.urlBase}/help-items/`, {
+        title,
+        description,
+        group_id,
+        image,
+        creator_id: user_id,
+      })
+      .then(APIDewrap),
 };

@@ -1,7 +1,6 @@
 import Router from "@koa/router";
 import * as API from "@app/ports/api";
 import * as Middleware from "@app/ports/http/middleware";
-import * as ViewModifiers from "@app/shared/view-modifiers";
 import * as HelpItems from "@app/domains/help-items";
 
 const pages = new Router();
@@ -48,7 +47,32 @@ pages
   })
   .get("/logout", (ctx) => {
     ctx.cookies.set("authentication", "");
+
     ctx.redirect("/login");
+  })
+  .get("/:slug/help-items/create", async (ctx) => {
+    const group = await API.groups.getBySlug(ctx.params.slug);
+
+    if (!group) {
+      // 404
+      return;
+    }
+
+    ctx.addHeadScript(
+      `<script src="https://cdn.tiny.cloud/1/mjunchb2kqoqhyr3wdq8i7o97g1chvkjxcuza3zk5qe774ri/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>`
+    );
+
+    ctx.addTailScript(`
+      <script>
+        tinymce.init({
+          selector: 'textarea',
+          plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
+          toolbar_mode: 'floating',
+        });
+      </script>
+    `);
+
+    await ctx.render("help-item/create", { group });
   })
   .get("/:slug/help-items/:id", Middleware.mustBeAuthenticated, async (ctx) => {
     const isInGroup = await API.users.userIsInGroup(

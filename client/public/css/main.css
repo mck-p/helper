@@ -108,7 +108,8 @@ body > main {
   font-size: 4rem;
 }
 
-.sign-up {
+.sign-up,
+form.help-item {
   width: 100%;
   padding: 2.5rem;
   max-width: 1200px;
@@ -146,4 +147,14 @@ footer p {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+
+.input_group input {
+  padding: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 200;
+  color:rgba(33, 33, 33, 0.85);
+  border-radius: 4.5px;
+  border: 1px solid rgba(33, 33, 33, 0.25);
 }

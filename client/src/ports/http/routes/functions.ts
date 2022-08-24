@@ -1,11 +1,46 @@
 import { URL } from "url";
-
+import { randomUUID } from "crypto";
 import Router from "@koa/router";
 import Body from "koa-body";
-import * as API from "@app/ports/api";
 import { AxiosError } from "axios";
+import multer from "@koa/multer";
+import multerS3 from "multer-s3";
+import { S3Client } from "@aws-sdk/client-s3";
+import mimetypes from "mime-types";
 
-const functions = new Router().use(Body());
+import * as Env from "@app/shared/env";
+import * as API from "@app/ports/api";
+import * as Middleware from "@app/ports/http/middleware";
+
+const s3 = new S3Client({
+  region: "us-east-1",
+  endpoint: "https://nyc3.digitaloceanspaces.com",
+  credentials: {
+    accessKeyId: Env.spaces.space_key,
+    secretAccessKey: Env.spaces.space_secret,
+  },
+});
+
+const upload = multer({
+  storage: multerS3({
+    s3,
+    bucket: "starfleet-libary",
+    acl: "public-read",
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(
+        null,
+        `${randomUUID({ disableEntropyCache: true })}.${mimetypes.extension(
+          file.mimetype
+        )}`
+      );
+    },
+  }) as any,
+});
+
+const functions = new Router();
 
 class MustHaveSponsor extends Error {
   statusCode = 400;
@@ -30,7 +65,7 @@ class EmailDoesNotExists extends Error {
 }
 
 functions
-  .post("/group-sign-up", async (ctx) => {
+  .post("/group-sign-up", Body(), async (ctx) => {
     const { body } = ctx.request;
 
     if (!body.sponsor) {
@@ -57,7 +92,7 @@ functions
 
     await ctx.render("groups/sign-up-success");
   })
-  .post("/user-sign-up", async (ctx) => {
+  .post("/user-sign-up", Body(), async (ctx) => {
     const { body } = ctx.request;
     try {
       await API.users.signup(body);
@@ -97,7 +132,7 @@ functions
       await ctx.redirect(`/sign-up${redirectURL.search}`);
     }
   })
-  .post("/email-request", async (ctx) => {
+  .post("/email-request", Body(), async (ctx) => {
     const { body } = ctx.request;
 
     if (!body.email) {
@@ -114,7 +149,7 @@ functions
 
     await ctx.render("groups/request-demo-success");
   })
-  .post("/login", async (ctx) => {
+  .post("/login", Body(), async (ctx) => {
     ctx.cookies.set(
       "authentication",
       await API.users.authenticate(ctx.request.body).then(({ token }) => token),
@@ -124,6 +159,22 @@ functions
     );
 
     await ctx.redirect("/dashboard");
-  });
+  })
+  .post(
+    "/help-items",
+    Middleware.mustBeAuthenticated,
+    upload.single("image"),
+    async (ctx) => {
+      const result = await API.helpItems.create({
+        ...ctx.request.body,
+        image: (ctx.request.file as any).location,
+        user_id: ctx.user.id,
+      });
+
+      const group = await API.groups.getById(ctx.request.body.group_id);
+
+      await ctx.redirect(`/${group.slug}/help-items/${result.id}`);
+    }
+  );
 
 export default functions;
