@@ -158,3 +158,23 @@ footer p {
   border-radius: 4.5px;
   border: 1px solid rgba(33, 33, 33, 0.25);
 }
+
+#site-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #70A3CC;
+  color: #fefefe;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#site-header a {
+  color: inherit;
+}
+
+#site-nav a:not(:last-of-type) {
+  margin-right: 1rem;
+}

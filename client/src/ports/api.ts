@@ -103,6 +103,12 @@ export const helpItems = {
     axios
       .post(`${Env.api.urlBase}/help-items/${help_item}/add-helper/${user_id}`)
       .then(APIDewrap),
+  cancelHelp: ({ help_item, user_id }: any) =>
+    axios
+      .post(
+        `${Env.api.urlBase}/help-items/${help_item}/remove-helper/${user_id}`
+      )
+      .then(APIDewrap),
   getHelpersForHelpItem: (help_item: string) =>
     axios
       .get(`${Env.api.urlBase}/help-items/${help_item}/helpers`)

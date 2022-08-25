@@ -1,3 +1,13 @@
+<header id="site-header">
+  <a href="/dashboard">
+    <h2>Helper</h2>
+  </a>
+  <nav id="site-nav">
+    <a href="/logout">
+      Logout
+    </a>
+  </nav>
+</header>
 <main class="grid-y grid-padding-y full help-item">
   <% if (helpItem.image) { %>
     <img src="<%- helpItem.image%>" alt="<%- helpItem.title%> Main Image" />
@@ -10,6 +20,16 @@
       <li><%- helper.meta.name ?? helper.email %></li>
     <% } %>
   </ul>
+  <% if (helpers.some(({ id }) => id === user.id)) { %>
+    <form action="/functions/cancel-help" method="POST">
+      <input hidden name="help_item" value="<%- helpItem.id %>" />
+      <input hidden name="group_id" value="<%- helpItem.group_id %>" />
+    
+      <button class="button submit" type="submit">
+        Cancel Offer for Help
+      </button>
+    </form>
+  <% } else { %>
   <form action="/functions/offer-help" method="POST">
     <input hidden name="help_item" value="<%- helpItem.id %>"/>
     <input hidden name="group_id" value="<%- helpItem.group_id %>" />
@@ -18,4 +38,5 @@
       Offer to be a Helper
     </button>
   </form>
+  <% } %>
 </main>
