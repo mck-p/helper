@@ -130,3 +130,8 @@ dist
 .pnp.*
 
 *.private.*
+
+.vscode/
+.vs/
+.IDEA/
+.DS_STORE/
