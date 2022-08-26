@@ -18,31 +18,24 @@ pages
       title: "Dashboard",
     });
 
-    const helpItems = await API.users.getHelpItemsByUserId(
-      ctx.user.id,
-      `after=now&limit=10`
-    );
-
-    const groupIds: Set<string> = new Set(
-      helpItems.map(({ group_id }: { group_id: string }) => group_id)
-    );
-
-    const groups = await Promise.all(
-      [...groupIds.values()].map((id) => API.groups.getById(id))
-    ).then((groups) =>
-      groups.reduce(
-        (a, c) => ({
-          ...a,
-          [c.id]: c,
-        }),
-        {}
-      )
-    );
+    const [helpItems, groups] = await Promise.all([
+      API.users.getHelpItemsByUserId(ctx.user.id, `after=now&limit=10`),
+      API.users.getGroupsByUserId(ctx.user.id),
+    ]);
 
     await ctx.render("user/dashboard", {
       user: ctx.user,
       upcomingHelpItems: helpItems.map(HelpItems.clean),
-      groups,
+      groups: {
+        byId: groups.reduce(
+          (a: any, c: any) => ({
+            ...a,
+            [c.id]: c,
+          }),
+          {}
+        ),
+        list: groups,
+      },
     });
   })
   .get("/logout", (ctx) => {

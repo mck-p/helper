@@ -67,7 +67,8 @@ export const users = {
     axios
       .get(`${Env.api.urlBase}/users/${id}/help-items?${query}`)
       .then(APIDewrap),
-
+  getGroupsByUserId: (id: string, query?: string) =>
+    axios.get(`${Env.api.urlBase}/users/${id}/groups?${query}`).then(APIDewrap),
   userIsInGroup: (userId: string, slug: string) =>
     axios
       .get(`${Env.api.urlBase}/users/${userId}/in-group/${slug}`)
