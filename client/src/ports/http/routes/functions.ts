@@ -27,11 +27,11 @@ const upload = multer({
   storage: multerS3({
     s3,
     bucket: "starfleet-libary",
-    acl: "read",
+    acl: "public-read",
     metadata: function (req, file, cb) {
       cb(null, {
         fieldName: file.fieldname,
-        contentType: mimetypes.contentType(file.originalname),
+        mimetype: file.mimetype,
       });
     },
     key: function (req, file, cb) {

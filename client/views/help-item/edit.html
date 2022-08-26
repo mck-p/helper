@@ -18,6 +18,13 @@
   <h1 class="text-center">How can the <%= group.name %> Group help you?</h1>
   <form class="cell help-item" action="/functions/update-help-item" method="POST" enctype="multipart/form-data">
     <div>
+      <% if (helpItem.image) { %> 
+        <div id="image-output" style="background: url('<%= helpItem.image %>') center center no-repeat; background-size: cover;">
+        </div>
+      <% } else { %>
+        <div id="image-output">
+        </div>
+      <% } %>
       <label for="image" class="button">
         Headline Image
       </label>
@@ -69,3 +76,24 @@
     </button>
   </form>
 </main>
+<script>
+  window.addEventListener('load', () => {
+    const avatarInput = document.getElementById('image')
+    const avatarOutput = document.getElementById('image-output')
+
+    avatarInput.addEventListener('change', e => {
+      const files = e.target.files
+
+      // FileReader support
+      if (FileReader && files && files.length) {
+        var fr = new FileReader();
+        fr.onload = function () {
+          console.log('')
+          avatarOutput.style.background = `url('${fr.result}') center center no-repeat`;
+          avatarOutput.style.backgroundSize = 'cover';
+        }
+        fr.readAsDataURL(files[0]);
+      }
+    })
+  })
+</script>

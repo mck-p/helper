@@ -14,7 +14,7 @@
 <main class="grid-y grid-padding-y full profile">
   <header>
     <div class="profile-avatar" alt="<%= user.meta.name %> Avatar"
-      style="background: url('<%= user.meta.avatar ? `https://${user.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size: cover;"
+      style="background: url('<%= user.meta.avatar ? `${user.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size: cover;"
       id="user-avatar">
     </div>
     <h2><%= user.meta.name || 'Unknown' %></h2>
