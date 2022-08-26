@@ -19,6 +19,7 @@
     "@types/node": "18.7.6",
     "@types/ramda": "0.28.15",
     "ava": "4.3.1",
+    "dotenv-flow": "3.2.0",
     "nodemon": "2.0.19",
     "pino-pretty": "9.0.0",
     "prettier": "2.7.1",
@@ -50,6 +51,6 @@
     "check-types": "yarn build -noEmit",
     "fmt": "prettier --write \"src/**/*.ts\"",
     "start": "node -r tsconfig-paths/register dist/entry.js",
-    "dev": "nodemon --exec \"ts-node -r tsconfig-paths/register src/entry.ts\" --ext \".ts\" | pino-pretty"
+    "dev": "nodemon --exec \"ts-node -r tsconfig-paths/register -r dotenv-flow/config src/entry.ts\" --ext \".ts\" | pino-pretty"
   }
 }
