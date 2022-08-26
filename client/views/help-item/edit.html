@@ -46,9 +46,9 @@
     <div class="input_group">
       <label>Help Type
         <select value="<%= helpItem.help_type %>" name="help_type">
-          <option value="general" selected="<%= helpItem.help_type === "general" %>">General</option>
-          <option value="financial" selected="<%= helpItem.help_type === "financial" %>">Financial</option>
-          <option value="time" selected="<%= helpItem.help_type === "time" %>">Time</option>
+          <option value="general" <%= helpItem.help_type === 'general' ? 'selected' :'' %>>General</option>
+          <option value="financial" <%= helpItem.help_type === 'financial' ? 'selected' :'' %>>Financial</option>
+          <option value="time" <%= helpItem.help_type === 'time' ? 'selected' :'' %>>Time</option>
         </select>
       </label>
     </div>
