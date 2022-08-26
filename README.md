@@ -7,6 +7,7 @@ and to help others do the same.
 
 ## Demos
 
+![Version 1](https://cdn.loom.com/sessions/thumbnails/94a3ec20436f4f86a5fb88785f523eb1-with-play.gif)
 [Version 1](https://www.loom.com/share/94a3ec20436f4f86a5fb88785f523eb1)
 
 ## Screenshots/
