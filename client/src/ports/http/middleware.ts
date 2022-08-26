@@ -1,7 +1,7 @@
 import type { Middleware } from "koa";
 import { verify } from "jsonwebtoken";
 
-import * as Errors from "./errors";
+import { format, formatDistanceToNow } from "date-fns";
 import * as API from "@app/ports/api";
 import * as Env from "@app/shared/env";
 
@@ -138,3 +138,14 @@ export const renderPage =
 
     await ctx.render(pageName);
   };
+
+export const formatters: Middleware = (ctx, next) => {
+  ctx.state.formatters = {
+    date: {
+      format,
+      formatDistanceToNow,
+    },
+  };
+
+  return next();
+};

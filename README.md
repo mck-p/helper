@@ -5,7 +5,11 @@
 The goal of Helper is to ensure that I am able to be the Hands and Feet of God
 and to help others do the same.
 
-## Screenshots
+## Demos
+
+![Version 1](https://www.loom.com/share/94a3ec20436f4f86a5fb88785f523eb1)
+
+## Screenshots/
 
 ![Dashboard](./artifacts/Screenshot%20from%202022-08-24%2018.12.24.png)
 

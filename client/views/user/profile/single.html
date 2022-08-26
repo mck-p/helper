@@ -1,0 +1,48 @@
+<header id="site-header">
+  <a href="/dashboard">
+    <h2>Helper</h2>
+  </a>
+  <nav id="site-nav">
+    <a href="/profile/edit">
+      Edit Profile
+    </a>
+    <a href="/logout">
+      Logout
+    </a>
+  </nav>
+</header>
+<main class="grid-y grid-padding-y full profile">
+  <header>
+    <div class="profile-avatar" alt="<%= user.meta.name %> Avatar"
+      style="background: url('<%= user.meta.avatar ? `https://${user.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size: cover;"
+      id="user-avatar">
+    </div>
+    <h2><%= user.meta.name || 'Unknown' %></h2>
+  </header>
+  <div class="profile-data">
+    <div class="datum">
+      <h4>Birthday</h4>
+      <p>
+        <%= user.meta.birthday || 'Unknown' %>
+      </p>
+    </div>
+    <div class="datum">
+      <h4>Contact Phone</h4>
+      <p>
+        <%= user.meta.phone || 'Unknown' %>
+      </p>
+    </div>
+    <div class="datum">
+      <h4>Contact Email</h4>
+      <p>
+        <%= user.meta.email || 'Unknown' %>
+      </p>
+    </div>
+    <div class="datum">
+      <h4>Contact Address</h4>
+      <p>
+        <%= user.meta.address  || 'Unknown' %>
+      </p>
+    </div>
+  </div>
+</main>

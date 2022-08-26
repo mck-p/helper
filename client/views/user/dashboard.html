@@ -3,6 +3,9 @@
     <h2>Helper</h2>
   </a>
   <nav id="site-nav">
+    <a href="/profile">
+      Your Profile
+    </a>
     <a href="/logout">
       Logout
     </a>
@@ -45,8 +48,13 @@
           <% upcomingHelpItems.forEach(helpItem => { %>
           <div class="card accordion-item" data-accordion-item>
             <a href="#" class="accordian-title">
-              <div class="card-divider text-center">
+              <div class="card-divider help-item-header">
                 <h4><%- helpItem.title %></h4>
+                <% if (helpItem.end_at) { %>
+                <span>
+                  <%= formatters.date.formatDistanceToNow(new Date(helpItem.end_at), { addSuffix: true }) %>
+                </span>
+                <% } %>
               </div>
             </a>
             <div class="card-section  accordion-content" data-tab-content>
@@ -78,8 +86,13 @@
         <% upcomingHelpRequests.forEach(helpItem => { %>
         <div class="card accordion-item" data-accordion-item>
           <a href="#" class="accordian-title">
-            <div class="card-divider text-center">
+            <div class="card-divider help-item-header">
               <h4><%- helpItem.title %></h4>
+              <% if (helpItem.end_at) { %>
+                <span>
+                  <%= formatters.date.formatDistanceToNow(new Date(helpItem.end_at), { addSuffix: true }) %>
+                </span>
+              <% } %>
             </div>
           </a>
           <div class="card-section  accordion-content" data-tab-content>
@@ -111,7 +124,7 @@
         <% for (const group of groups.list) { %>
           <div class="card accordion-item" data-accordion-item>
             <a href="#" class="accordian-title">
-              <div class="card-divider text-center">
+              <div class="card-divider text-center ">
                 <h4><%= group.name %></h4>
               </div>
             </a>

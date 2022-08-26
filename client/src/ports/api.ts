@@ -36,7 +36,7 @@ export const groups = {
 export const users = {
   getByEmail: (email: string): Promise<{ id: string }> =>
     axios.get(`${Env.api.urlBase}/users/by-email/${email}`).then(APIDewrap),
-  getById: (id: string): Promise<{ id: string }> =>
+  getById: (id: string): Promise<{ id: string; meta: { [x: string]: any } }> =>
     axios.get(`${Env.api.urlBase}/users/${id}`).then(APIDewrap),
   signup: ({
     email,
@@ -76,6 +76,10 @@ export const users = {
   userIsInGroup: (userId: string, slug: string) =>
     axios
       .get(`${Env.api.urlBase}/users/${userId}/in-group/${slug}`)
+      .then(APIDewrap),
+  updateProfile: (userId: string, update: any) =>
+    axios
+      .patch(`${Env.api.urlBase}/users/${userId}/meta`, update)
       .then(APIDewrap),
 };
 

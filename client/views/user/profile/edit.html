@@ -1,0 +1,84 @@
+<header id="site-header">
+  <a href="/dashboard">
+    <h2>Helper</h2>
+  </a>
+  <nav id="site-nav">
+    <a href="/profile">
+      Your Profile
+    </a>
+    <a href="/logout">
+      Logout
+    </a>
+  </nav>
+</header>
+<main class="grid-y grid-padding-y full profile edit">
+  <form action="/functions/update-profile" method="POST" enctype="multipart/form-data">
+    <header>
+      <div class="profile-avatar" alt="<%= user.meta.name %> Avatar" style="background:
+      url('<%= user.meta.avatar ? `https://${user.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size: cover;"id="user-avatar">
+      </div>
+      <div class="avatar-edit">
+        <label for="avatar" class="button">
+          Change Avatar Image
+        </label>
+        <input type="file" name="avatar" id="avatar" class="show-for-sr" />
+      </div>
+    </header>
+    <div class="profile-info">
+      <div class="input_group">
+        <label for="name">
+          Your Name
+        </label>
+        <input type="text" value="<%= user.meta.name %>" name="name" id="name" />
+      </div>
+      <div class="input_group">
+        <label for="birthday">
+          Your Birthday
+        </label>
+        <input type="date" value="<%= user.meta.birthday %>" name="birthday" id="birthday" />
+      </div>
+      <div class="input_group">
+        <label for="phone">
+          Your Phone Number
+        </label>
+        <input type="text" value="<%= user.meta.phone %>" name="phone" id="phone" placeholder="(555) 432-1234"/>
+      </div>
+      <div class="input_group">
+        <label for="email">
+          Your Contact Email
+        </label>
+        <input type="email" value="<%= user.meta.email || user.email %>" name="email" id="email" />
+      </div>
+      <div class="input_group">
+        <label for="address">
+          Your Contact Address
+        </label>
+        <textarea name="address" id="address" rows="3"><%= user.meta.address %></textarea>
+      </div>
+    </div>
+    <button type="submit" class="button submit">
+      Update Profile Information
+    </button>
+  </form>
+</main>
+<script>
+  window.addEventListener('load', () => {
+    const avatarInput = document.getElementById('avatar')
+    const avatarOutput = document.getElementById('user-avatar')
+    
+    avatarInput.addEventListener('change', e => {
+      const files = e.target.files
+
+      // FileReader support
+      if (FileReader && files && files.length) {
+        var fr = new FileReader();
+        fr.onload = function () {
+          console.log('')
+          avatarOutput.style.background = `url('${fr.result}') center center no-repeat`;
+          avatarOutput.style.backgroundSize = 'cover';
+        }
+        fr.readAsDataURL(files[0]);
+      }
+    })
+  })
+</script>

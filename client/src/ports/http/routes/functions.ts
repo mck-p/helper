@@ -27,9 +27,12 @@ const upload = multer({
   storage: multerS3({
     s3,
     bucket: "starfleet-libary",
-    acl: "public-read",
+    acl: "read",
     metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname });
+      cb(null, {
+        fieldName: file.fieldname,
+        contentType: mimetypes.contentType(file.originalname),
+      });
     },
     key: function (req, file, cb) {
       cb(
@@ -282,6 +285,39 @@ functions
       const group = await API.groups.getById(ctx.request.body.group_id);
 
       await ctx.redirect(`/${group.slug}/help-items/${oldItem.id}`);
+    }
+  )
+  .post(
+    "/update-profile",
+    Middleware.mustBeAuthenticated,
+    upload.single("avatar"),
+    async (ctx) => {
+      const oldProfile = await API.users.getById(ctx.user.id);
+
+      if (ctx.request.file) {
+        if (oldProfile.meta.avatar) {
+          const url = oldProfile.meta.avatar.split("/");
+          const key = url.pop();
+
+          const bucketParams = { Bucket: "starfleet-libary", Key: key };
+
+          try {
+            await s3.send(new DeleteObjectCommand(bucketParams));
+          } catch (err) {
+            Log.warn(
+              { err },
+              "We tried to delete an image but failed. Swallowing"
+            );
+          }
+        }
+      }
+
+      await API.users.updateProfile(ctx.user.id, {
+        ...ctx.request.body,
+        avatar: (ctx.request?.file as any)?.location,
+      });
+
+      await ctx.redirect(`/profile`);
     }
   );
 

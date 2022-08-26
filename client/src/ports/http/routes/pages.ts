@@ -172,6 +172,12 @@ pages
     });
 
     await ctx.render("user/sign-up");
+  })
+  .get("/profile/edit", Middleware.mustBeAuthenticated, async (ctx) => {
+    await ctx.render("user/profile/edit", { user: ctx.user });
+  })
+  .get("/profile", Middleware.mustBeAuthenticated, async (ctx) => {
+    await ctx.render("user/profile/single", { user: ctx.user });
   });
 
 export default pages;
