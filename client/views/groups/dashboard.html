@@ -20,7 +20,7 @@
     <%- group.description %>
   </div>
     <ul 
-      class="grid-x grid-margin-x small-up-1 large-up-3 accordion" 
+      class="grid-x grid-margin-x small-up-1 accordion" 
       data-accordion data-allow-all-closed="true"
       data-deep-link="true" 
       data-update-history="true" 
@@ -48,16 +48,34 @@
           <h5>No upcoming Help Items. Reach out to your Group and see who needs help!</h5>
         </div>
         <% } else { %>
-        <div class="card-section accordion-content accordion grid-x small-up-1 large-up-3" data-tab-content data-accordion
+        <div class="card-section accordion-content accordion grid-x small-up-1" data-tab-content data-accordion
           data-multi-expand="true" data-allow-all-closed="true" id="upcoming-items">
       
           <% helpItems.forEach(helpItem => { %>
           <div class="card accordion-item" data-accordion-item>
             <a href="#" class="accordian-title">
-              <div class="card-divider text-center">
-                <h4><%- helpItem.title %></h4>
+              <div class="card-divider help-item-header">
+                <h4><%- helpItem.title %>
+                </h4>
+                
+                <% if (helpItem.help_type === 'financial') { %>
+                  <span class="material-symbols-outlined">
+                    payments
+                  </span>
+                <% } %>
+                <% if (helpItem.help_type === 'time') { %>
+                  <span class="material-symbols-outlined">
+                    schedule
+                  </span>
+                <% } %>
+                <% if (helpItem.help_type === 'general') { %>
+                  <span class="material-symbols-outlined">
+                    group_add
+                  </span>
+                <% } %>
               </div>
             </a>
+
             <div class="card-section  accordion-content" data-tab-content>
               <%- helpItem.description %>
               <a href="/<%- group.slug %>/help-items/<%- helpItem.id %>" class="button">

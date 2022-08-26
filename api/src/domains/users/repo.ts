@@ -282,6 +282,32 @@ class UserRepo {
       .orderBy("help_items.created_at", "DESC");
   }
 
+  getUserHelpRequests(userId: string, query: { [x: string]: any }) {
+    const args: { [x: string]: any } = {
+      limit: query.limit ?? 10,
+    };
+
+    if (query.after) {
+      if (query.after === "now") {
+        args.after = new Date().toISOString();
+      } else {
+        args.after = query.after;
+      }
+    }
+
+    return this.#connection
+      .from("help_items")
+      .where({ creator_id: userId })
+      .andWhere((builder) => {
+        if (args.after) {
+          builder.where("end_at", ">", args.after);
+        }
+
+        return builder.orWhereNull("end_at");
+      })
+      .select("*");
+  }
+
   isUserInGroup(userId: string, groupId: string) {
     return this.#connection
       .from("user_groups")

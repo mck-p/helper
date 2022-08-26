@@ -3,6 +3,9 @@
     <h2>Helper</h2>
   </a>
   <nav id="site-nav">
+    <a href="/<%= group.slug %>/dashboard">
+      <%= group.name %> Dashboard
+    </a>
     <a href="/logout">
       Logout
     </a>
@@ -25,7 +28,7 @@
       <input hidden name="help_item" value="<%- helpItem.id %>" />
       <input hidden name="group_id" value="<%- helpItem.group_id %>" />
     
-      <button class="button submit" type="submit">
+      <button class="button alert" type="submit">
         Cancel Offer for Help
       </button>
     </form>
@@ -45,9 +48,12 @@
       <input hidden name="group_id" value="<%= helpItem.group_id %>" />
       <input hidden name="help_item" value="<%= helpItem.id %>" />
 
-      <button class="button submit" type="submit">
+      <button class="button alert" type="submit">
         Revoke Request for Help
       </button>
     </form>
+    <a href="/<%= group.slug %>/help-items/<%= helpItem.id %>/edit" class="button">
+      Edit Request for Help
+    </a>
   <% } %>
 </main>

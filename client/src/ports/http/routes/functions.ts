@@ -6,9 +6,11 @@ import { AxiosError } from "axios";
 import multer from "@koa/multer";
 import multerS3 from "multer-s3";
 import { S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import mimetypes from "mime-types";
 
 import * as Env from "@app/shared/env";
+import Log from "@app/shared/log";
 import * as API from "@app/ports/api";
 import * as Middleware from "@app/ports/http/middleware";
 
@@ -205,11 +207,81 @@ functions
     Middleware.mustBeAuthenticated,
     Body(),
     async (ctx) => {
-      await API.helpItems.delete(ctx.request.body.help_item);
+      const oldItem = await API.helpItems.getById(ctx.request.body.help_item);
+
+      if (!oldItem) {
+        return await ctx.redirect(`/dashboard`);
+      }
+
+      if (oldItem.image) {
+        const url = oldItem.image.split("/");
+        const key = url.pop();
+
+        const bucketParams = { Bucket: "starfleet-libary", Key: key };
+
+        try {
+          await s3.send(new DeleteObjectCommand(bucketParams));
+        } catch (err) {
+          Log.warn(
+            { err },
+            "We tried to delete an image but failed. Swallowing"
+          );
+        }
+      }
+
+      await API.helpItems.delete(oldItem.id);
 
       const group = await API.groups.getById(ctx.request.body.group_id);
 
       await ctx.redirect(`/${group.slug}/dashboard`);
+    }
+  )
+  .post(
+    "/update-help-item",
+    Middleware.mustBeAuthenticated,
+    upload.single("image"),
+    async (ctx) => {
+      const oldItem = await API.helpItems.getById(ctx.request.body.help_item);
+
+      if (!oldItem) {
+        return await ctx.redirect(`/dashboard`);
+      }
+
+      const update: any = {
+        title: ctx.request.body.title,
+        description: ctx.request.body.description,
+        help_type: ctx.request.body.help_type,
+      };
+
+      if (ctx.request.body.end_at) {
+        update.end_at = ctx.request.body.end_at;
+      }
+
+      if (ctx.request.file) {
+        if (oldItem.image) {
+          const url = oldItem.image.split("/");
+          const key = url.pop();
+
+          const bucketParams = { Bucket: "starfleet-libary", Key: key };
+
+          try {
+            await s3.send(new DeleteObjectCommand(bucketParams));
+          } catch (err) {
+            Log.warn(
+              { err },
+              "We tried to delete an image but failed. Swallowing"
+            );
+          }
+        }
+
+        update.image = (ctx.request.file as any).location;
+      }
+
+      await API.helpItems.update(ctx.request.body.help_item, update);
+
+      const group = await API.groups.getById(ctx.request.body.group_id);
+
+      await ctx.redirect(`/${group.slug}/help-items/${oldItem.id}`);
     }
   );
 

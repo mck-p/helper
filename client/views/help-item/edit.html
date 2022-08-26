@@ -16,7 +16,7 @@
 </header>
 <main class="grid-y grid-padding-y full">
   <h1 class="text-center">How can the <%= group.name %> Group help you?</h1>
-  <form class="cell help-item" action="/functions/help-items" method="POST" enctype="multipart/form-data">
+  <form class="cell help-item" action="/functions/update-help-item" method="POST" enctype="multipart/form-data">
     <div>
       <label for="image" class="button">
         Headline Image
@@ -28,7 +28,7 @@
       <label for="title">
         Title*
       </label>
-      <input name="title" type="text" id="title" required />
+      <input name="title" type="text" id="title" required value="<%= helpItem.title %>"/>
     </div>
     <div class="input_group">
       <label for="description">
@@ -38,18 +38,17 @@
         This will be replaced with a tiny.mce instance
         and be all cool and stuff
       -->
-      <textarea 
-        name="description"
-        id="description"
-      ></textarea>
+      <textarea name="description" id="description">
+        <%= helpItem.description %>
+      </textarea>
     </div>
 
     <div class="input_group">
       <label>Help Type
-        <select name="help_type">
-          <option value="general">General</option>
-          <option value="financial">Financial</option>
-          <option value="time">Time</option>
+        <select value="<%= helpItem.help_type %>" name="help_type">
+          <option value="general" selected="<%= helpItem.help_type === "general" %>">General</option>
+          <option value="financial" selected="<%= helpItem.help_type === "financial" %>">Financial</option>
+          <option value="time" selected="<%= helpItem.help_type === "time" %>">Time</option>
         </select>
       </label>
     </div>
@@ -58,13 +57,15 @@
       <label for="help_time">
         When is this needed?
       </label>
-      <input type="datetime-local" name="end_at" id="help_time" />
+      <input type="datetime-local" name="end_at" id="help_time" value="<%= helpItem.end_at %>" />
     </div>
 
     <input value=<%= group.id %> name="group_id" hidden />
+    <input value=<%= helpItem.id %> name="help_item" hidden />
+
 
     <button type="submit" class="submit button">
-      Request Help
+      Update Help Request
     </button>
   </form>
 </main>

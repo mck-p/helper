@@ -89,6 +89,11 @@ userRouter
     const data = await userRepo.getHelpItemsForUser(ctx.params.id, ctx.query);
 
     ctx.state.data = data;
+  })
+  .get("/:id/help-requests", async (ctx) => {
+    const data = await userRepo.getUserHelpRequests(ctx.params.id, ctx.query);
+
+    ctx.state.data = data;
   });
 
 export default userRouter;

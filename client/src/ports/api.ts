@@ -67,6 +67,10 @@ export const users = {
     axios
       .get(`${Env.api.urlBase}/users/${id}/help-items?${query}`)
       .then(APIDewrap),
+  getHelpRequesrtsByUserId: (id: string, query?: string) =>
+    axios
+      .get(`${Env.api.urlBase}/users/${id}/help-requests?${query}`)
+      .then(APIDewrap),
   getGroupsByUserId: (id: string, query?: string) =>
     axios.get(`${Env.api.urlBase}/users/${id}/groups?${query}`).then(APIDewrap),
   userIsInGroup: (userId: string, slug: string) =>
@@ -120,4 +124,8 @@ export const helpItems = {
       .then(APIDewrap),
   delete: (helpItem: string) =>
     axios.delete(`${Env.api.urlBase}/help-items/${helpItem}`).then(APIDewrap),
+  update: (helpItem: string, update: any) =>
+    axios
+      .patch(`${Env.api.urlBase}/help-items/${helpItem}`, update)
+      .then(APIDewrap),
 };

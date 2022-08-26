@@ -162,6 +162,18 @@ class HelpItemRepo {
       })
       .delete();
   }
+
+  async updateById(id: string, update: any) {
+    const [result] = await this.#connection
+      .from("help_items")
+      .where({
+        id,
+      })
+      .update(update)
+      .returning("*");
+
+    return result;
+  }
 }
 
 export default HelpItemRepo;

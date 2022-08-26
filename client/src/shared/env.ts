@@ -10,9 +10,6 @@ export const api = {
 };
 
 export const spaces = {
-  space_key: getenv.string("SPACE_KEY", "DO003KPHWTHBYVV8YAGD"),
-  space_secret: getenv.string(
-    "SPACE_SECRET",
-    "RqZzsTkwSN0HKTcFlDWVWl4k7eylq14CjAtIokfu9/g"
-  ),
+  space_key: getenv.string("SPACE_KEY"),
+  space_secret: getenv.string("SPACE_SECRET"),
 };

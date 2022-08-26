@@ -18,14 +18,16 @@ pages
       title: "Dashboard",
     });
 
-    const [helpItems, groups] = await Promise.all([
+    const [helpItems, groups, helpRequests] = await Promise.all([
       API.users.getHelpItemsByUserId(ctx.user.id, `after=now&limit=10`),
       API.users.getGroupsByUserId(ctx.user.id),
+      API.users.getHelpRequesrtsByUserId(ctx.user.id, `after=now&limit=10`),
     ]);
 
     await ctx.render("user/dashboard", {
       user: ctx.user,
       upcomingHelpItems: helpItems.map(HelpItems.clean),
+      upcomingHelpRequests: helpRequests.map(HelpItems.clean),
       groups: {
         byId: groups.reduce(
           (a: any, c: any) => ({
@@ -71,6 +73,43 @@ pages
       await ctx.render("help-item/create", { group });
     }
   )
+  .get(
+    "/:slug/help-items/:id/edit",
+    Middleware.mustBeAuthenticated,
+    async (ctx) => {
+      const group = await API.groups.getBySlug(ctx.params.slug);
+
+      if (!group) {
+        // 404
+        return;
+      }
+
+      const helpItem = await API.helpItems.getById(ctx.params.id);
+
+      if (!helpItem) {
+        return ctx.redirect(`/${group.slug}/dashboard`);
+      }
+
+      ctx.addHeadScript(
+        `<script src="https://cdn.tiny.cloud/1/mjunchb2kqoqhyr3wdq8i7o97g1chvkjxcuza3zk5qe774ri/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>`
+      );
+
+      ctx.addTailScript(`
+      <script>
+        tinymce.init({
+          selector: 'textarea',
+          plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
+          toolbar_mode: 'floating',
+        });
+      </script>
+    `);
+
+      await ctx.render("help-item/edit", {
+        group,
+        helpItem: HelpItems.clean(helpItem),
+      });
+    }
+  )
   .get("/:slug/help-items/:id", Middleware.mustBeAuthenticated, async (ctx) => {
     const isInGroup = await API.users.userIsInGroup(
       ctx.user.id,
@@ -80,11 +119,12 @@ pages
     if (!isInGroup) {
       return ctx.redirect("/dashboard");
     }
+    const group = await API.groups.getBySlug(ctx.params.slug);
 
     const helpItem = await API.helpItems.getById(ctx.params.id);
 
     if (!helpItem) {
-      return ctx.redirect("/dashboard");
+      return ctx.redirect(`/${group.slug}/dashboard`);
     }
 
     const helpers = await API.helpItems.getHelpersForHelpItem(ctx.params.id);
@@ -93,6 +133,7 @@ pages
       helpItem: HelpItems.clean(helpItem),
       user: ctx.user,
       helpers,
+      group,
     });
   })
   .get("/:slug/sign-up", async (ctx) => {

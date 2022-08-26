@@ -50,5 +50,15 @@ helpItemsRouter
     ctx.state.data = {
       deleted: true,
     };
+  })
+  .patch("/:id", async (ctx) => {
+    const data = await helpItemRepo.updateById(ctx.params.id, ctx.request.body);
+
+    ctx.state.data = data;
+
+    ctx.state.statusCode = 201;
+    ctx.state.meta = {
+      uri: `/help-items/${data.id}`,
+    };
   });
 export default helpItemsRouter;
