@@ -199,6 +199,18 @@ functions
     await ctx.redirect(
       `/${group.slug}/help-items/${ctx.request.body.help_item}`
     );
-  });
+  })
+  .post(
+    "/delete-help-item",
+    Middleware.mustBeAuthenticated,
+    Body(),
+    async (ctx) => {
+      await API.helpItems.delete(ctx.request.body.help_item);
+
+      const group = await API.groups.getById(ctx.request.body.group_id);
+
+      await ctx.redirect(`/${group.slug}/dashboard`);
+    }
+  );
 
 export default functions;

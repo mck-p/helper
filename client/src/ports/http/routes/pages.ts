@@ -43,19 +43,22 @@ pages
 
     ctx.redirect("/login");
   })
-  .get("/:slug/help-items/create", async (ctx) => {
-    const group = await API.groups.getBySlug(ctx.params.slug);
+  .get(
+    "/:slug/help-items/create",
+    Middleware.mustBeAuthenticated,
+    async (ctx) => {
+      const group = await API.groups.getBySlug(ctx.params.slug);
 
-    if (!group) {
-      // 404
-      return;
-    }
+      if (!group) {
+        // 404
+        return;
+      }
 
-    ctx.addHeadScript(
-      `<script src="https://cdn.tiny.cloud/1/mjunchb2kqoqhyr3wdq8i7o97g1chvkjxcuza3zk5qe774ri/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>`
-    );
+      ctx.addHeadScript(
+        `<script src="https://cdn.tiny.cloud/1/mjunchb2kqoqhyr3wdq8i7o97g1chvkjxcuza3zk5qe774ri/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>`
+      );
 
-    ctx.addTailScript(`
+      ctx.addTailScript(`
       <script>
         tinymce.init({
           selector: 'textarea',
@@ -65,8 +68,9 @@ pages
       </script>
     `);
 
-    await ctx.render("help-item/create", { group });
-  })
+      await ctx.render("help-item/create", { group });
+    }
+  )
   .get("/:slug/help-items/:id", Middleware.mustBeAuthenticated, async (ctx) => {
     const isInGroup = await API.users.userIsInGroup(
       ctx.user.id,
@@ -104,6 +108,22 @@ pages
     });
 
     await ctx.render("groups/sign-up", { group });
+  })
+  .get("/:slug/dashboard", Middleware.mustBeAuthenticated, async (ctx) => {
+    const group = await API.groups.getBySlug(ctx.params.slug);
+
+    if (!group) {
+      // 404
+      return;
+    }
+
+    ctx.updateMeta({
+      title: `${group.name} Dashboard`,
+    });
+
+    const helpItems = await API.helpItems.getHelpItemsForGroup(group.id);
+
+    await ctx.render("groups/dashboard", { group, helpItems, user: ctx.user });
   })
   .get("/sign-up", async (ctx) => {
     ctx.updateMeta({

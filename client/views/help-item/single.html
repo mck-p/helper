@@ -39,4 +39,15 @@
     </button>
   </form>
   <% } %>
+  <% if (user.id === helpItem.creator_id) { %>
+    <form action="/functions/delete-help-item" method="POST">
+      <input hidden name="user_id" value="<%= user.id %>" />
+      <input hidden name="group_id" value="<%= helpItem.group_id %>" />
+      <input hidden name="help_item" value="<%= helpItem.id %>" />
+
+      <button class="button submit" type="submit">
+        Revoke Request for Help
+      </button>
+    </form>
+  <% } %>
 </main>

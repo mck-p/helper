@@ -114,4 +114,10 @@ export const helpItems = {
     axios
       .get(`${Env.api.urlBase}/help-items/${help_item}/helpers`)
       .then(APIDewrap),
+  getHelpItemsForGroup: (group_id: string) =>
+    axios
+      .get(`${Env.api.urlBase}/groups/${group_id}/help-items`)
+      .then(APIDewrap),
+  delete: (helpItem: string) =>
+    axios.delete(`${Env.api.urlBase}/help-items/${helpItem}`).then(APIDewrap),
 };
