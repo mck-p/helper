@@ -25,6 +25,67 @@ makes, such as Form Submitions (_Functions_) or dynamic pages (_Pages_). The API
 is responsible for understanding and serving the Data Layer (_PSQL_) and for handling
 any authorization needed.
 
+### K8s/Docker
+
+You can develop using K8s/Docker locally via [Minikube](https://minikube.sigs.k8s.io/docs/)
+and [K9s](https://k9scli.io/).
+
+#### 1. Start Minikube
+
+```sh
+minikube start --addons=ingress,metrics-server --cpus=max
+```
+
+![Expected Output](./artifacts/Screenshot from 2022-08-27 10.45.20.png)
+
+
+#### 2. Connect via K9s
+
+```sh
+k9s
+```
+![Expected Output](./artifacts/Screenshot%20from%202022-08-27%2010.46.26.png)
+
+#### 3. Connect Minikube to Local Docker Commands
+
+This will make all docker commands _typed in the shell session_ to be able
+to be reached by Minikube. Specifically, this will allow you to run
+`docker build` and `docker tag` commands and then have Minikube "pull" the
+Images from that output. 
+
+Do this in a shell that you will have open _forever_ and that you don't mind
+running any docker commands on
+
+```sh
+eval $(minikube docker-env)
+```
+
+![Expected Output](./artifacts/Screenshot%20from%202022-08-27%2010.48.58.png)
+
+#### 4. Build and Tag Images
+
+```sh
+# build client and tag it mckp/helper-client
+# using the file Client.Dockerfile
+# and using the context of this current directory
+docker build -t mckp/helper-client -f Client.Dockerfile .
+
+# build api and tag it mckp/helper-api
+# using the file API.Dockerfile
+# and using the context of this current directory
+docker build -t mckp/helper-api -f API.Dockerfile . 
+```
+
+#### 5. Apply K8s
+
+```sh
+kubectl apply -k ./k8s
+```
+
+Should cause pods to be created in your Minikube cluster
+
+![Expected Output](artifacts/Screenshot%20from%202022-08-27%2011.06.49.png)
+
 #### Install Dependencies
 
 ```sh
