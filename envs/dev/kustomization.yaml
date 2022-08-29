@@ -1,0 +1,7 @@
+resources:
+- ../../k8s
+
+patches:
+- path: image-pull-policy.yaml
+  target:
+    kind: Deployment

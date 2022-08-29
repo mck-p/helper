@@ -17,10 +17,5 @@ spec:
       containers:
       - name: api
         image: mckp/helper-api
-        # this is set to Never so that it
-        # always uses whatever is preloaded
-        # 
-        # Change for prod via patch
-        imagePullPolicy: Never
         ports:
         - containerPort: 5000

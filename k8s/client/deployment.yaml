@@ -17,11 +17,6 @@ spec:
       containers:
       - name: client
         image: mckp/helper-client
-        # this is set to Never so that it
-        # always uses whatever is preloaded
-        # 
-        # Change for prod via patch
-        imagePullPolicy: Never
         env:
           - name: SPACE_KEY
             value: foobar
