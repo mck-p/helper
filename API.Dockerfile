@@ -14,6 +14,8 @@ WORKDIR /app
 # and for views/public/etc
 COPY ./api ./
 
+COPY ./artifacts /artifacts
+
 RUN yarn install --production=true --frozen-lockfile
 
 COPY --from=BUILD /app/dist/ /app/dist/

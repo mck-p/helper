@@ -15,7 +15,35 @@ spec:
         app: api
     spec:
       containers:
-      - name: api
-        image: mckp/helper-api
-        ports:
-        - containerPort: 5000
+        - name: api
+          image: mckp/helper-api
+          env:
+            - name: LOG_LEVEL
+              value: trace
+            - name: ENVIRONMENT
+              value: DEVELOPMENT
+            - name: JWT_SECRET
+              value: my little secret
+            - name: PORT
+              value: "5000"
+            - name: DB_HOST
+              value: $(POSTGRES_SERVICE_HOST)
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_DB
+          ports:
+          - containerPort: 5000

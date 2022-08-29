@@ -5,3 +5,8 @@ patches:
 - path: image-pull-policy.yaml
   target:
     kind: Deployment
+    name: api
+- path: image-pull-policy.yaml
+  target:
+    kind: Deployment
+    name: client
