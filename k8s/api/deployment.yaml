@@ -22,8 +22,6 @@ spec:
               value: trace
             - name: ENVIRONMENT
               value: DEVELOPMENT
-            - name: JWT_SECRET
-              value: my little secret
             - name: PORT
               value: "5000"
             - name: DB_HOST
@@ -45,5 +43,10 @@ spec:
                 configMapKeyRef:
                   name: postgres-config
                   key: POSTGRES_DB
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: api-secrets
+                  key: JWT_SECRET
           ports:
           - containerPort: 5000

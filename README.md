@@ -69,11 +69,18 @@ eval $(minikube docker-env)
 # using the file Client.Dockerfile
 # and using the context of this current directory
 docker build -t mckp/helper-client -f Client.Dockerfile .
+# You can also run
+# ./scripts/build-client
 
 # build api and tag it mckp/helper-api
 # using the file API.Dockerfile
 # and using the context of this current directory
 docker build -t mckp/helper-api -f API.Dockerfile . 
+# You can also run
+# ./scripts/build-api
+
+# You can build thema ll via
+./scripts/build-services
 ```
 
 #### 5. Apply K8s

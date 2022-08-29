@@ -135,3 +135,6 @@ dist
 .vs/
 .IDEA/
 .DS_STORE/
+
+client.env
+api.env

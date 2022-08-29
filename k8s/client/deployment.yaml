@@ -19,8 +19,19 @@ spec:
         image: mckp/helper-client
         env:
           - name: SPACE_KEY
-            value: foobar
+            valueFrom:
+              secretKeyRef:
+                name: client-secrets
+                key: SPACE_KEY
           - name: SPACE_SECRET
-            value: bazborp
+            valueFrom:
+              secretKeyRef:
+                name: client-secrets
+                key: SPACE_SECRET
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: client-secrets
+                key: JWT_SECRET
         ports:
         - containerPort: 5000

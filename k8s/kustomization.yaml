@@ -2,3 +2,4 @@ resources:
   - ./api
   - ./client
   - ./psql
+  - ./secrets
