@@ -21,25 +21,17 @@ userRouter
       uri: `/users/${data.id}`,
     };
   })
-  .post(
-    "/",
-    Middleware.mustBeAuthenticated,
-    Middleware.ensureUserCanPerformAction((ctx) => ({
-      object: `USERS`,
-      action: "CREATE",
-    })),
-    async (ctx) => {
-      const data = await userRepo.create(ctx.request.body);
+  .post("/", async (ctx) => {
+    const data = await userRepo.create(ctx.request.body);
 
-      ctx.state.data = data;
+    ctx.state.data = data;
 
-      ctx.state.statusCode = 201;
+    ctx.state.statusCode = 201;
 
-      ctx.state.meta = {
-        uri: `/users/${data.id}`,
-      };
-    }
-  )
+    ctx.state.meta = {
+      uri: `/users/${data.id}`,
+    };
+  })
   .post("/authenticate", async (ctx) => {
     const authenticated = await userRepo.passwordsMatch(ctx.request.body);
 

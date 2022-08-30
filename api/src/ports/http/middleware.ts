@@ -73,8 +73,8 @@ export const handelValidationErrors: Middleware = async (ctx, next) => {
   }
 };
 
-export const canUserPefromAction: Middleware = (ctx, next) => {
-  ctx.canUserPefromAction = Authorization.canUserPefromAction;
+export const canUserPeformAction: Middleware = (ctx, next) => {
+  ctx.canUserPeformAction = Authorization.canUserPeformAction;
 
   return next();
 };

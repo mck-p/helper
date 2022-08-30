@@ -12,7 +12,7 @@ server
   .use(Middleware.handleStateErrors)
   .use(Middleware.handelValidationErrors)
   .use(Middleware.authenticateByHeader)
-  .use(Middleware.canUserPefromAction)
+  .use(Middleware.canUserPeformAction)
   .use(
     logger({
       logger: Log.child({}),

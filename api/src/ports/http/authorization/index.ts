@@ -21,7 +21,7 @@ const parseObject = (objectStr: string, sep = "::") => {
   return { domain, id };
 };
 
-export const canUserPefromAction = async (unparsed: {
+export const canUserPeformAction = async (unparsed: {
   object: string;
   user: string;
   action: string;
