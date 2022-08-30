@@ -25,7 +25,7 @@ makes, such as Form Submitions (_Functions_) or dynamic pages (_Pages_). The API
 is responsible for understanding and serving the Data Layer (_PSQL_) and for handling
 any authorization needed.
 
-### K8s/Docker
+### Minikube/Docker
 
 You can develop using K8s/Docker locally via [Minikube](https://minikube.sigs.k8s.io/docs/)
 and [K9s](https://k9scli.io/).
@@ -93,6 +93,13 @@ Should cause pods to be created in your Minikube cluster
 
 ![Expected Output](artifacts/Screenshot%20from%202022-08-27%2011.06.49.png)
 
+### Local Development
+
+If you have your own PSQL instance running along with your own Node install
+and want to run the services locally on your machine, you are free to use Yarn
+to install and run the projects via `yarn` to install the deps and `yarn dev`
+to run in development mode:
+
 #### Install Dependencies
 
 ```sh
@@ -100,25 +107,6 @@ cd client && yarn
 cd ../
 cd api && yarn
 cd ../
-```
-
-#### Start Backing Services
-
-```sh
-docker-compose -f docker-compose.dev.yaml up -d
-```
-
-#### Connect to Local PSQL Instance
-
-```sh
-# Get the container ID
-docker ps
-
-# Enter the container
-docker exec -it <container-id> bash
-
-# run psql to connect using username and database name
-psql -U username helper
 ```
 
 #### Start Services

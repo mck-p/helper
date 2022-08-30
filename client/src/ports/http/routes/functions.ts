@@ -69,6 +69,23 @@ class EmailDoesNotExists extends Error {
   }
 }
 
+const deletePreviousImage = async (key: string) => {
+  const bucketParams = { Bucket: "starfleet-libary", Key: key };
+
+  try {
+    await s3.send(new DeleteObjectCommand(bucketParams));
+  } catch (err) {
+    Log.warn({ err }, "We tried to delete an image but failed. Swallowing");
+  }
+};
+
+const deletePreviousSpaceImage = (imageLocation: string) => {
+  const url = imageLocation.split("/");
+  const key = url.pop();
+
+  return deletePreviousImage(key!);
+};
+
 functions
   .post("/group-sign-up", Body(), async (ctx) => {
     const { body } = ctx.request;
@@ -217,19 +234,7 @@ functions
       }
 
       if (oldItem.image) {
-        const url = oldItem.image.split("/");
-        const key = url.pop();
-
-        const bucketParams = { Bucket: "starfleet-libary", Key: key };
-
-        try {
-          await s3.send(new DeleteObjectCommand(bucketParams));
-        } catch (err) {
-          Log.warn(
-            { err },
-            "We tried to delete an image but failed. Swallowing"
-          );
-        }
+        deletePreviousSpaceImage(oldItem.image);
       }
 
       await API.helpItems.delete(oldItem.id);
@@ -262,19 +267,7 @@ functions
 
       if (ctx.request.file) {
         if (oldItem.image) {
-          const url = oldItem.image.split("/");
-          const key = url.pop();
-
-          const bucketParams = { Bucket: "starfleet-libary", Key: key };
-
-          try {
-            await s3.send(new DeleteObjectCommand(bucketParams));
-          } catch (err) {
-            Log.warn(
-              { err },
-              "We tried to delete an image but failed. Swallowing"
-            );
-          }
+          deletePreviousSpaceImage(oldItem.image);
         }
 
         update.image = (ctx.request.file as any).location;
@@ -296,19 +289,7 @@ functions
 
       if (ctx.request.file) {
         if (oldProfile.meta.avatar) {
-          const url = oldProfile.meta.avatar.split("/");
-          const key = url.pop();
-
-          const bucketParams = { Bucket: "starfleet-libary", Key: key };
-
-          try {
-            await s3.send(new DeleteObjectCommand(bucketParams));
-          } catch (err) {
-            Log.warn(
-              { err },
-              "We tried to delete an image but failed. Swallowing"
-            );
-          }
+          deletePreviousSpaceImage(oldProfile.meta.avatar);
         }
       }
 
