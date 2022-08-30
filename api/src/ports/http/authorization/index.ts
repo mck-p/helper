@@ -40,5 +40,11 @@ export const canUserPeformAction = async (unparsed: {
     return true;
   }
 
+  if (object.domain === "USER") {
+    if (unparsed.user === object.id) {
+      return true;
+    }
+  }
+
   return false;
 };
