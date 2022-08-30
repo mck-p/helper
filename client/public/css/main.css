@@ -221,3 +221,24 @@ footer p {
   background: rgba(33, 33, 33, 0.5);
   border-radius: 4.5px;
 }
+
+.member-header {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.member-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.member-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.member-meta span {
+  font-weight: 700;
+}

@@ -14,7 +14,7 @@ WORKDIR /app
 # and for views/public/etc
 COPY ./client ./
 
-RUN yarn install --production=true
+RUN yarn install --production=true --frozen-lockfiles
 
 COPY --from=BUILD /app/dist/ /app/dist/
 ENV PORT=5000

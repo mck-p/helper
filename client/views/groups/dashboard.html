@@ -87,6 +87,42 @@
         </div>
         <% } %>
       </li>
+      <li class="cell card accordion-item" data-accordion-item>
+        <a href="#members" class="accordian-title">
+          <div class="card-divider text-center">
+            <h3>Group Members</h3>
+          </div>
+        </a>
+        
+        <div class="card-section accordion-content accordion grid-x small-up-1" data-tab-content data-accordion
+          data-multi-expand="true" data-allow-all-closed="true" id="members">
+      
+          <% users.forEach(member => { %>
+            <div class="card accordion-item" data-accordion-item>
+              <a href="#" class="accordian-title">
+                <div class="card-divider member-header">
+                  <div class="member-avatar" style="background: url('<%= member.meta.avatar ? `${member.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size:cover;">
+                  </div>
+                  <h4>
+                    <%- member.meta.name || member.meta.email || member.email %>
+                  </h4>
+                </div>
+              </a>
+            
+              <div class="card-section  accordion-content" data-tab-content>
+                <div class="member-meta">
+                  <p>Birthday: <span><%= member.meta.birthday || 'Unknown' %></span></p>
+                  <p>Email: <span><%= member.meta.email || member.email %></span></p>
+                  <p>Phone: <span><%= member.meta.phone || 'Unknown' %></span></p>
+                </div>
+                <a href="/<%- group.slug %>/members/<%- member.id %>" class="button">
+                  See Member Profile
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </li>
     </ul>
 </main>
 <script>

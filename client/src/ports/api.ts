@@ -85,6 +85,14 @@ export const users = {
     axios
       .get(`${Env.api.urlBase}/users/${userId}/in-group/${slug}`)
       .then(APIDewrap),
+  usersInGroup: (groupId: string, authToken: string) =>
+    axios
+      .get(`${Env.api.urlBase}/groups/${groupId}/members`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then(APIDewrap),
   updateProfile: (userId: string, update: any, authToken: string) =>
     axios
       .patch(`${Env.api.urlBase}/users/${userId}/meta`, update, {

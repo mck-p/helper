@@ -117,7 +117,7 @@ class GroupsRepo {
         group_id: groupId,
       })
       .join("users", "users.id", "user_groups.user_id")
-      .select("users.id", "users.email");
+      .select("users.id", "users.email", "users.meta");
   }
 
   getHelpItemsForGroup(groupId: string) {

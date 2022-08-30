@@ -195,7 +195,22 @@ pages
       getAuthenticationToken(ctx)
     );
 
-    await ctx.render("groups/dashboard", { group, helpItems, user: ctx.user });
+    const users = await API.users.usersInGroup(
+      group.id,
+      getAuthenticationToken(ctx)
+    );
+
+    await ctx.render("groups/dashboard", {
+      group,
+      helpItems,
+      user: ctx.user,
+      users,
+    });
+  })
+  .get("/:slug/members/:id", async (ctx) => {
+    const user = await API.users.getById(ctx.params.id);
+
+    await ctx.render("user/profile/single", { user });
   })
   .get("/sign-up", async (ctx) => {
     ctx.updateMeta({
