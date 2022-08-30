@@ -93,6 +93,15 @@ Should cause pods to be created in your Minikube cluster
 
 ![Expected Output](artifacts/Screenshot%20from%202022-08-27%2011.06.49.png)
 
+
+#### 6. /etc/hosts
+
+You should be able to set your `/etc/hosts` file to point the
+`helper.local` to the `minikube ip` address:
+
+```text
+192.168.49.2 helper.local
+```
 ### Local Development
 
 If you have your own PSQL instance running along with your own Node install
