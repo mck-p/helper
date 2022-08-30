@@ -31,6 +31,9 @@ server
   .use(
     logger({
       logger: Log.child({}),
+      autoLogging: {
+        ignorePaths: ["/__internal__/healthcheck"],
+      },
     })
   )
   .use(Static(path.relative(projectRoot, "public")))

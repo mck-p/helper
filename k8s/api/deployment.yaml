@@ -15,8 +15,26 @@ spec:
         app: api
     spec:
       containers:
+        # It is important that our application
+        # code is the _first_ container defined
+        # due to patches. Maybe one day we can
+        # fix this but for now, IF YOU COPY THIS
+        # YOU MUST KEEP YOUR CUSTOM DOCKER IMAGE
+        # AS THE FIRST CONTAINER OR ELSE
         - name: api
           image: mckp/helper-api
+          livenessProbe:
+            httpGet:
+              path: /__internal__/healthcheck
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /__internal__/healthcheck
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 3            
           env:
             - name: LOG_LEVEL
               value: trace

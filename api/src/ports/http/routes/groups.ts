@@ -2,6 +2,7 @@ import Router from "@koa/router";
 import BodyParser from "koa-body";
 import DB from "@app/ports/database";
 import GroupRepo from "@app/domains/groups/repo";
+import * as Middleware from "@app/ports/http/middleware";
 
 import * as Errors from "@app/ports/http/errors";
 
@@ -10,15 +11,23 @@ const groupRouter = new Router().use(BodyParser());
 const groupRepo = new GroupRepo(DB);
 
 groupRouter
-  .post("/", async (ctx) => {
-    const data = await groupRepo.create(ctx.request.body);
+  .post(
+    "/",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: `GROUPS`,
+      action: "CREATE",
+    })),
+    async (ctx) => {
+      const data = await groupRepo.create(ctx.request.body);
 
-    ctx.state.data = data;
-    ctx.state.statusCode = 201;
-    ctx.state.meta = {
-      uri: `/groups/${data.id}`,
-    };
-  })
+      ctx.state.data = data;
+      ctx.state.statusCode = 201;
+      ctx.state.meta = {
+        uri: `/groups/${data.id}`,
+      };
+    }
+  )
   .post("/request-demo", async (ctx) => {
     const data = await groupRepo.requestDemo(ctx.request.body.email);
 
@@ -50,13 +59,21 @@ groupRouter
 
     ctx.state.data = data;
   })
-  .post("/:id/add-member/:userId", async (ctx) => {
-    await groupRepo.assignUserToGroup(ctx.params.id, ctx.params.userId);
+  .post(
+    "/:id/add-member/:userId",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: `GROUP::${ctx.params.id}`,
+      action: "ADD_MEMBER",
+    })),
+    async (ctx) => {
+      await groupRepo.assignUserToGroup(ctx.params.id, ctx.params.userId);
 
-    ctx.state.data = {
-      added: true,
-    };
-  })
+      ctx.state.data = {
+        added: true,
+      };
+    }
+  )
   .post("/:id/request-access/:user_id/:sponsor_id", async (ctx) => {
     await groupRepo.requestUserJoinGroup({
       groupId: ctx.params.id,
@@ -68,19 +85,35 @@ groupRouter
       added: true,
     };
   })
-  .post("/:id/remove-member/:userId", async (ctx) => {
-    await groupRepo.removeUserFromGroup(ctx.params.id, ctx.params.userId);
+  .post(
+    "/:id/remove-member/:userId",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: `GROUP::${ctx.params.id}`,
+      action: "REMOVE_MEMBER",
+    })),
+    async (ctx) => {
+      await groupRepo.removeUserFromGroup(ctx.params.id, ctx.params.userId);
 
-    ctx.state.data = {
-      removed: true,
-    };
-  })
-  .delete("/:id", async (ctx) => {
-    await groupRepo.deleteById(ctx.params.id);
+      ctx.state.data = {
+        removed: true,
+      };
+    }
+  )
+  .delete(
+    "/:id",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: `GROUP::${ctx.params.id}`,
+      action: "DELETE",
+    })),
+    async (ctx) => {
+      await groupRepo.deleteById(ctx.params.id);
 
-    ctx.state.data = {
-      deleted: true,
-    };
-  });
+      ctx.state.data = {
+        deleted: true,
+      };
+    }
+  );
 
 export default groupRouter;

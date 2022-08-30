@@ -11,11 +11,11 @@ import * as R from "ramda";
 const APIDewrap = R.path<any>(["data", "data"]);
 
 export const groups = {
-  getBySlug: (slug: string) =>
+  getBySlug: (slug: string, authToken: string) =>
     axios
       .get(`${Env.api.urlBase}/groups/slug/${encodeURIComponent(slug)}`)
       .then(APIDewrap),
-  getById: (id: string) =>
+  getById: (id: string, authToken: string) =>
     axios.get(`${Env.api.urlBase}/groups/${id}`).then(APIDewrap),
   requestAccess: (request: {
     userId: string;
@@ -63,73 +63,134 @@ export const users = {
     axios
       .post(`${Env.api.urlBase}/users/authenticate`, { email, password })
       .then(APIDewrap),
-  getHelpItemsByUserId: (id: string, query?: string) =>
+  getHelpItemsByUserId: (id: string, query?: string, authToken?: string) =>
     axios
-      .get(`${Env.api.urlBase}/users/${id}/help-items?${query}`)
+      .get(`${Env.api.urlBase}/users/${id}/help-items?${query}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
       .then(APIDewrap),
-  getHelpRequesrtsByUserId: (id: string, query?: string) =>
+  getHelpRequesrtsByUserId: (id: string, query?: string, authToken?: string) =>
     axios
-      .get(`${Env.api.urlBase}/users/${id}/help-requests?${query}`)
+      .get(`${Env.api.urlBase}/users/${id}/help-requests?${query}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
       .then(APIDewrap),
-  getGroupsByUserId: (id: string, query?: string) =>
+  getGroupsByUserId: (id: string, query?: string, authToken?: string) =>
     axios.get(`${Env.api.urlBase}/users/${id}/groups?${query}`).then(APIDewrap),
   userIsInGroup: (userId: string, slug: string) =>
     axios
       .get(`${Env.api.urlBase}/users/${userId}/in-group/${slug}`)
       .then(APIDewrap),
-  updateProfile: (userId: string, update: any) =>
+  updateProfile: (userId: string, update: any, authToken: string) =>
     axios
-      .patch(`${Env.api.urlBase}/users/${userId}/meta`, update)
+      .patch(`${Env.api.urlBase}/users/${userId}/meta`, update, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
       .then(APIDewrap),
 };
 
 export const helpItems = {
-  getById: (id: string) =>
-    axios.get(`${Env.api.urlBase}/help-items/${id}`).then(APIDewrap),
-  create: ({
-    title,
-    description,
-    group_id,
-    user_id,
-    image,
-  }: {
-    title: string;
-    description: string;
-    group_id: string;
-    user_id: string;
-    image: string;
-  }) =>
+  getById: (id: string, authToken: string) =>
     axios
-      .post(`${Env.api.urlBase}/help-items/`, {
-        title,
-        description,
-        group_id,
-        image,
-        creator_id: user_id,
+      .get(`${Env.api.urlBase}/help-items/${id}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
       })
       .then(APIDewrap),
-  offerHelp: ({ help_item, user_id }: any) =>
-    axios
-      .post(`${Env.api.urlBase}/help-items/${help_item}/add-helper/${user_id}`)
-      .then(APIDewrap),
-  cancelHelp: ({ help_item, user_id }: any) =>
+  create: (
+    {
+      title,
+      description,
+      group_id,
+      user_id,
+      image,
+    }: {
+      title: string;
+      description: string;
+      group_id: string;
+      user_id: string;
+      image: string;
+    },
+    authToken: string
+  ) =>
     axios
       .post(
-        `${Env.api.urlBase}/help-items/${help_item}/remove-helper/${user_id}`
+        `${Env.api.urlBase}/help-items/`,
+        {
+          title,
+          description,
+          group_id,
+          image,
+          creator_id: user_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
       )
       .then(APIDewrap),
-  getHelpersForHelpItem: (help_item: string) =>
+  offerHelp: ({ help_item, user_id }: any, authToken: string) =>
     axios
-      .get(`${Env.api.urlBase}/help-items/${help_item}/helpers`)
+      .post(
+        `${Env.api.urlBase}/help-items/${help_item}/add-helper/${user_id}`,
+        undefined,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      )
       .then(APIDewrap),
-  getHelpItemsForGroup: (group_id: string) =>
+  cancelHelp: ({ help_item, user_id }: any, authToken: string) =>
     axios
-      .get(`${Env.api.urlBase}/groups/${group_id}/help-items`)
+      .post(
+        `${Env.api.urlBase}/help-items/${help_item}/remove-helper/${user_id}`,
+        undefined,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      )
       .then(APIDewrap),
-  delete: (helpItem: string) =>
-    axios.delete(`${Env.api.urlBase}/help-items/${helpItem}`).then(APIDewrap),
-  update: (helpItem: string, update: any) =>
+  getHelpersForHelpItem: (help_item: string, authToken: string) =>
     axios
-      .patch(`${Env.api.urlBase}/help-items/${helpItem}`, update)
+      .get(`${Env.api.urlBase}/help-items/${help_item}/helpers`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then(APIDewrap),
+  getHelpItemsForGroup: (group_id: string, authToken: string) =>
+    axios
+      .get(`${Env.api.urlBase}/groups/${group_id}/help-items`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then(APIDewrap),
+  delete: (helpItem: string, authToken: string) =>
+    axios
+      .delete(`${Env.api.urlBase}/help-items/${helpItem}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then(APIDewrap),
+  update: (helpItem: string, update: any, authToken: string) =>
+    axios
+      .patch(`${Env.api.urlBase}/help-items/${helpItem}`, update, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
       .then(APIDewrap),
 };

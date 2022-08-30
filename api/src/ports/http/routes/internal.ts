@@ -3,9 +3,12 @@ import fs from "fs/promises";
 import Router from "@koa/router";
 import BodyParser from "koa-body";
 import DB from "@app/ports/database";
-import GroupRepo from "@app/domains/groups/repo";
+import Log from "@app/shared/log";
+import * as Middleware from "@app/ports/http/middleware";
 
-import * as Errors from "@app/ports/http/errors";
+const log = Log.child({
+  name: "Internal Router",
+});
 
 const sqlDir = path.resolve(
   __dirname,
@@ -18,19 +21,55 @@ const sqlDir = path.resolve(
   "database"
 );
 
-const migrations = [path.join(sqlDir, "tables.sql")];
+const migrations = [
+  path.join(sqlDir, "tables.sql"),
+  path.join(sqlDir, "permissions.sql"),
+];
 
 const internalRouter = new Router().use(BodyParser());
 
-internalRouter.post("/db/migrate", async (ctx) => {
-  for (const migration of migrations) {
-    await DB.raw(await fs.readFile(migration, "utf-8"));
-  }
+internalRouter
+  .get("/healthcheck", async (ctx) => {
+    try {
+      await DB.raw("SELECT NOW()");
 
-  ctx.status = 201;
-  ctx.state.data = {
-    migration: true,
-  };
-});
+      ctx.state.data = {
+        healthy: true,
+      };
+    } catch (e) {
+      log.warn({ err: e }, "Healthcheck Failed due to Database");
+
+      ctx.status = 500;
+
+      ctx.state.error = {
+        healthy: false,
+      };
+    }
+  })
+  .post(
+    "/db/migrate",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: "DATABASE",
+      action: "MIGRATE",
+    })),
+    async (ctx) => {
+      for (const migration of migrations) {
+        try {
+          await DB.raw(await fs.readFile(migration, "utf-8"));
+        } catch (err) {
+          console.error(err);
+          console.warn(
+            "ERROR WHILE RUNNING MIGRATION. SWALLOWING BUT MAY CAUSE WEIRD RESULTS"
+          );
+        }
+      }
+
+      ctx.status = 201;
+      ctx.state.data = {
+        migration: true,
+      };
+    }
+  );
 
 export default internalRouter;

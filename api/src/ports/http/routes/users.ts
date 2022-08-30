@@ -3,6 +3,7 @@ import BodyParser from "koa-body";
 import DB from "@app/ports/database";
 import UserRepo from "@app/domains/users/repo";
 import GroupRepo from "@app/domains/groups/repo";
+import * as Middleware from "@app/ports/http/middleware";
 import * as Errors from "@app/ports/http/errors";
 
 const userRouter = new Router().use(BodyParser());
@@ -20,17 +21,25 @@ userRouter
       uri: `/users/${data.id}`,
     };
   })
-  .post("/", async (ctx) => {
-    const data = await userRepo.create(ctx.request.body);
+  .post(
+    "/",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: `USERS`,
+      action: "CREATE",
+    })),
+    async (ctx) => {
+      const data = await userRepo.create(ctx.request.body);
 
-    ctx.state.data = data;
+      ctx.state.data = data;
 
-    ctx.state.statusCode = 201;
+      ctx.state.statusCode = 201;
 
-    ctx.state.meta = {
-      uri: `/users/${data.id}`,
-    };
-  })
+      ctx.state.meta = {
+        uri: `/users/${data.id}`,
+      };
+    }
+  )
   .post("/authenticate", async (ctx) => {
     const authenticated = await userRepo.passwordsMatch(ctx.request.body);
 
@@ -70,16 +79,24 @@ userRouter
 
     ctx.state.data = await userRepo.isUserInGroup(ctx.params.id, group.id);
   })
-  .patch("/:id", async (ctx) => {
+  .patch("/:id", Middleware.mustBeAuthenticated, async (ctx) => {
     const data = await userRepo.update(ctx.params.id, ctx.request.body);
 
     ctx.state.data = data;
   })
-  .patch("/:id/meta", async (ctx) => {
-    const data = await userRepo.updateMeta(ctx.params.id, ctx.request.body);
+  .patch(
+    "/:id/meta",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: `USERS::${ctx.params.id}`,
+      action: "UPDATE",
+    })),
+    async (ctx) => {
+      const data = await userRepo.updateMeta(ctx.params.id, ctx.request.body);
 
-    ctx.state.data = data;
-  })
+      ctx.state.data = data;
+    }
+  )
   .get("/:id/groups", async (ctx) => {
     const data = await userRepo.getGroupsForUser(ctx.params.id);
 

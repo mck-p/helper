@@ -13,6 +13,7 @@ import * as Env from "@app/shared/env";
 import Log from "@app/shared/log";
 import * as API from "@app/ports/api";
 import * as Middleware from "@app/ports/http/middleware";
+import { Context } from "koa";
 
 const s3 = new S3Client({
   region: "us-east-1",
@@ -85,6 +86,9 @@ const deletePreviousSpaceImage = (imageLocation: string) => {
 
   return deletePreviousImage(key!);
 };
+
+const getAuthenticationToken = (ctx: Context) =>
+  ctx.cookies.get("authentication") || "";
 
 functions
   .post("/group-sign-up", Body(), async (ctx) => {
@@ -187,36 +191,54 @@ functions
     Middleware.mustBeAuthenticated,
     upload.single("image"),
     async (ctx) => {
-      const result = await API.helpItems.create({
-        ...ctx.request.body,
-        image: (ctx.request.file as any).location,
-        user_id: ctx.user.id,
-      });
+      const result = await API.helpItems.create(
+        {
+          ...ctx.request.body,
+          image: (ctx.request.file as any).location,
+          user_id: ctx.user.id,
+        },
+        getAuthenticationToken(ctx)
+      );
 
-      const group = await API.groups.getById(ctx.request.body.group_id);
+      const group = await API.groups.getById(
+        ctx.request.body.group_id,
+        getAuthenticationToken(ctx)
+      );
 
       await ctx.redirect(`/${group.slug}/help-items/${result.id}`);
     }
   )
   .post("/offer-help", Middleware.mustBeAuthenticated, Body(), async (ctx) => {
-    await API.helpItems.offerHelp({
-      help_item: ctx.request.body.help_item,
-      user_id: ctx.user.id,
-    });
+    await API.helpItems.offerHelp(
+      {
+        help_item: ctx.request.body.help_item,
+        user_id: ctx.user.id,
+      },
+      getAuthenticationToken(ctx)
+    );
 
-    const group = await API.groups.getById(ctx.request.body.group_id);
+    const group = await API.groups.getById(
+      ctx.request.body.group_id,
+      getAuthenticationToken(ctx)
+    );
 
     await ctx.redirect(
       `/${group.slug}/help-items/${ctx.request.body.help_item}`
     );
   })
   .post("/cancel-help", Middleware.mustBeAuthenticated, Body(), async (ctx) => {
-    await API.helpItems.cancelHelp({
-      help_item: ctx.request.body.help_item,
-      user_id: ctx.user.id,
-    });
+    await API.helpItems.cancelHelp(
+      {
+        help_item: ctx.request.body.help_item,
+        user_id: ctx.user.id,
+      },
+      getAuthenticationToken(ctx)
+    );
 
-    const group = await API.groups.getById(ctx.request.body.group_id);
+    const group = await API.groups.getById(
+      ctx.request.body.group_id,
+      getAuthenticationToken(ctx)
+    );
 
     await ctx.redirect(
       `/${group.slug}/help-items/${ctx.request.body.help_item}`
@@ -227,7 +249,10 @@ functions
     Middleware.mustBeAuthenticated,
     Body(),
     async (ctx) => {
-      const oldItem = await API.helpItems.getById(ctx.request.body.help_item);
+      const oldItem = await API.helpItems.getById(
+        ctx.request.body.help_item,
+        getAuthenticationToken(ctx)
+      );
 
       if (!oldItem) {
         return await ctx.redirect(`/dashboard`);
@@ -237,9 +262,12 @@ functions
         deletePreviousSpaceImage(oldItem.image);
       }
 
-      await API.helpItems.delete(oldItem.id);
+      await API.helpItems.delete(oldItem.id, getAuthenticationToken(ctx));
 
-      const group = await API.groups.getById(ctx.request.body.group_id);
+      const group = await API.groups.getById(
+        ctx.request.body.group_id,
+        getAuthenticationToken(ctx)
+      );
 
       await ctx.redirect(`/${group.slug}/dashboard`);
     }
@@ -249,7 +277,10 @@ functions
     Middleware.mustBeAuthenticated,
     upload.single("image"),
     async (ctx) => {
-      const oldItem = await API.helpItems.getById(ctx.request.body.help_item);
+      const oldItem = await API.helpItems.getById(
+        ctx.request.body.help_item,
+        getAuthenticationToken(ctx)
+      );
 
       if (!oldItem) {
         return await ctx.redirect(`/dashboard`);
@@ -273,9 +304,16 @@ functions
         update.image = (ctx.request.file as any).location;
       }
 
-      await API.helpItems.update(ctx.request.body.help_item, update);
+      await API.helpItems.update(
+        ctx.request.body.help_item,
+        update,
+        getAuthenticationToken(ctx)
+      );
 
-      const group = await API.groups.getById(ctx.request.body.group_id);
+      const group = await API.groups.getById(
+        ctx.request.body.group_id,
+        getAuthenticationToken(ctx)
+      );
 
       await ctx.redirect(`/${group.slug}/help-items/${oldItem.id}`);
     }
@@ -293,10 +331,14 @@ functions
         }
       }
 
-      await API.users.updateProfile(ctx.user.id, {
-        ...ctx.request.body,
-        avatar: (ctx.request?.file as any)?.location,
-      });
+      await API.users.updateProfile(
+        ctx.user.id,
+        {
+          ...ctx.request.body,
+          avatar: (ctx.request?.file as any)?.location,
+        },
+        getAuthenticationToken(ctx)
+      );
 
       await ctx.redirect(`/profile`);
     }

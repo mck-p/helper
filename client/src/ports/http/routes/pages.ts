@@ -2,8 +2,12 @@ import Router from "@koa/router";
 import * as API from "@app/ports/api";
 import * as Middleware from "@app/ports/http/middleware";
 import * as HelpItems from "@app/domains/help-items";
+import { Context } from "koa";
 
 const pages = new Router();
+
+const getAuthenticationToken = (ctx: Context) =>
+  ctx.cookies.get("authentication") || "";
 
 pages
   .get("/", Middleware.renderPage("landing"))
@@ -49,7 +53,10 @@ pages
     "/:slug/help-items/create",
     Middleware.mustBeAuthenticated,
     async (ctx) => {
-      const group = await API.groups.getBySlug(ctx.params.slug);
+      const group = await API.groups.getBySlug(
+        ctx.params.slug,
+        getAuthenticationToken(ctx)
+      );
 
       if (!group) {
         // 404
@@ -77,14 +84,20 @@ pages
     "/:slug/help-items/:id/edit",
     Middleware.mustBeAuthenticated,
     async (ctx) => {
-      const group = await API.groups.getBySlug(ctx.params.slug);
+      const group = await API.groups.getBySlug(
+        ctx.params.slug,
+        getAuthenticationToken(ctx)
+      );
 
       if (!group) {
         // 404
         return;
       }
 
-      const helpItem = await API.helpItems.getById(ctx.params.id);
+      const helpItem = await API.helpItems.getById(
+        ctx.params.id,
+        getAuthenticationToken(ctx)
+      );
 
       if (!helpItem) {
         return ctx.redirect(`/${group.slug}/dashboard`);
@@ -119,15 +132,24 @@ pages
     if (!isInGroup) {
       return ctx.redirect("/dashboard");
     }
-    const group = await API.groups.getBySlug(ctx.params.slug);
+    const group = await API.groups.getBySlug(
+      ctx.params.slug,
+      getAuthenticationToken(ctx)
+    );
 
-    const helpItem = await API.helpItems.getById(ctx.params.id);
+    const helpItem = await API.helpItems.getById(
+      ctx.params.id,
+      getAuthenticationToken(ctx)
+    );
 
     if (!helpItem) {
       return ctx.redirect(`/${group.slug}/dashboard`);
     }
 
-    const helpers = await API.helpItems.getHelpersForHelpItem(ctx.params.id);
+    const helpers = await API.helpItems.getHelpersForHelpItem(
+      ctx.params.id,
+      getAuthenticationToken(ctx)
+    );
 
     await ctx.render("help-item/single", {
       helpItem: HelpItems.clean(helpItem),
@@ -137,7 +159,10 @@ pages
     });
   })
   .get("/:slug/sign-up", async (ctx) => {
-    const group = await API.groups.getBySlug(ctx.params.slug);
+    const group = await API.groups.getBySlug(
+      ctx.params.slug,
+      getAuthenticationToken(ctx)
+    );
 
     if (!group) {
       // 404
@@ -151,7 +176,10 @@ pages
     await ctx.render("groups/sign-up", { group });
   })
   .get("/:slug/dashboard", Middleware.mustBeAuthenticated, async (ctx) => {
-    const group = await API.groups.getBySlug(ctx.params.slug);
+    const group = await API.groups.getBySlug(
+      ctx.params.slug,
+      getAuthenticationToken(ctx)
+    );
 
     if (!group) {
       // 404
@@ -162,7 +190,10 @@ pages
       title: `${group.name} Dashboard`,
     });
 
-    const helpItems = await API.helpItems.getHelpItemsForGroup(group.id);
+    const helpItems = await API.helpItems.getHelpItemsForGroup(
+      group.id,
+      getAuthenticationToken(ctx)
+    );
 
     await ctx.render("groups/dashboard", { group, helpItems, user: ctx.user });
   })

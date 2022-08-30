@@ -1,4 +1,13 @@
-import type { Middleware } from "koa";
+import type { Context, Middleware } from "koa";
+import { verify } from "jsonwebtoken";
+import DB from "@app/ports/database";
+import UserRepo from "@app/domains/users/repo";
+import * as Env from "@app/shared/env";
+import Log from "@app/shared/log";
+import * as Authorization from "./authorization";
+import * as Errors from "./errors";
+
+const userRepo = new UserRepo(DB);
 
 export const handleTopLevelState: Middleware = async (ctx, next) => {
   await next();
@@ -32,6 +41,7 @@ export const handleStateErrors: Middleware = async (ctx, next) => {
   try {
     await next();
   } catch (e: any) {
+    Log.warn({ err: e });
     ctx.state.error = {
       message: e.message,
     };
@@ -51,12 +61,69 @@ export const handelValidationErrors: Middleware = async (ctx, next) => {
         ""
       );
 
-      const err = new TypeError(msg.trim()) as Error & { statusCode?: number };
+      const err = new TypeError(msg.trim()) as Error & {
+        statusCode?: number;
+      };
       err.statusCode = 400;
 
       throw err;
     }
 
     throw e;
+  }
+};
+
+export const canUserPefromAction: Middleware = (ctx, next) => {
+  ctx.canUserPefromAction = Authorization.canUserPefromAction;
+
+  return next();
+};
+
+export const ensureUserCanPerformAction =
+  (actionCreator: (ctx: Context) => { [x: string]: string }): Middleware =>
+  (ctx, next) => {
+    if (
+      ctx.canUserPeformAction({
+        ...actionCreator(ctx),
+        user: ctx.user.id,
+      })
+    ) {
+      return next();
+    } else {
+      throw new Errors.NotAuthorized();
+    }
+  };
+
+export const authenticateByHeader: Middleware = async (ctx, next) => {
+  try {
+    const token = ctx.headers.authorization?.replace("Bearer ", "");
+
+    if (!token) {
+      return next();
+    }
+
+    try {
+      const { data } = (await verify(token, Env.jwtSecret)) as any;
+
+      const { id } = data;
+
+      const user = await userRepo.getById(id);
+
+      ctx.user = user || {};
+    } catch (e) {
+      ctx.user = {};
+    }
+
+    return next();
+  } catch (e) {
+    return next();
+  }
+};
+
+export const mustBeAuthenticated: Middleware = (ctx, next) => {
+  if (!ctx.user) {
+    throw new Errors.NotAuthorized();
+  } else {
+    return next();
   }
 };

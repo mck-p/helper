@@ -6,7 +6,13 @@ patches:
   target:
     kind: Deployment
     name: api
+    
 - path: image-pull-policy.yaml
   target:
     kind: Deployment
     name: client
+
+- path: host-name.yaml
+  target:
+    kind: Ingress
+    name: helper-ingress

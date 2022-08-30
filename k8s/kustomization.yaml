@@ -3,3 +3,4 @@ resources:
   - ./client
   - ./psql
   - ./secrets
+  - ./ingress.yaml
