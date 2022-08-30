@@ -3,4 +3,6 @@ resources:
   - ./client
   - ./psql
   - ./secrets
+  - ./influx
+  - ./grafana
   - ./ingress.yaml

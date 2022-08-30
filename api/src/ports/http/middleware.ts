@@ -4,15 +4,20 @@ import DB from "@app/ports/database";
 import UserRepo from "@app/domains/users/repo";
 import * as Env from "@app/shared/env";
 import Log from "@app/shared/log";
+import Metrics from "@app/ports/metrics";
 import * as Authorization from "./authorization";
 import * as Errors from "./errors";
 
 const userRepo = new UserRepo(DB);
 
 export const handleTopLevelState: Middleware = async (ctx, next) => {
+  Metrics.increment("request.received");
   await next();
+  Metrics.increment("request.handled");
 
   if (ctx.state.error) {
+    Metrics.increment("request.errored");
+
     ctx.body = {
       error: ctx.state.error,
       meta: {
@@ -25,6 +30,7 @@ export const handleTopLevelState: Middleware = async (ctx, next) => {
   }
 
   if (ctx.state.data) {
+    Metrics.increment("request.success");
     ctx.body = {
       data: ctx.state.data,
       meta: {
@@ -54,6 +60,8 @@ export const handelValidationErrors: Middleware = async (ctx, next) => {
   try {
     await next();
   } catch (e: any) {
+    Metrics.increment("request.errored.validation");
+
     if (e.errors) {
       const msg = e.errors.reduce(
         (a: string, c: { property: string; message: string }) =>
@@ -90,6 +98,8 @@ export const ensureUserCanPerformAction =
     ) {
       return next();
     } else {
+      Metrics.increment("request.errored.authorization");
+
       throw new Errors.NotAuthorized();
     }
   };
@@ -122,6 +132,8 @@ export const authenticateByHeader: Middleware = async (ctx, next) => {
 
 export const mustBeAuthenticated: Middleware = (ctx, next) => {
   if (!ctx.user) {
+    Metrics.increment("request.error.authentication");
+
     throw new Errors.NotAuthorized();
   } else {
     return next();

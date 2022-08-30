@@ -1,0 +1,6 @@
+resources:
+  - ./config-map.yaml
+  - ./deployment.yaml
+  - ./pvc.yaml
+  - ./secrets.yaml
+  - ./service.yaml

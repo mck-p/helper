@@ -2,18 +2,27 @@ import type { Middleware } from "koa";
 import { verify } from "jsonwebtoken";
 
 import { format, formatDistanceToNow } from "date-fns";
+
+import Metrics from "@app/ports/metrics";
+
 import * as API from "@app/ports/api";
 import * as Env from "@app/shared/env";
 
 export const handleTopLevelState: Middleware = async (ctx, next) => {
+  Metrics.increment("request.received");
   await next();
+  Metrics.increment("request.handled");
 
   if (ctx.state.error) {
+    Metrics.increment("request.errored");
+
     ctx.status = ctx.state.statusCode || 500;
     await ctx.render("error", { error: ctx.state.error });
   }
 
   if (ctx.state.data) {
+    Metrics.increment("request.success");
+
     ctx.body = {
       data: ctx.state.data,
       meta: {
@@ -29,6 +38,8 @@ export const handleTopLevelState: Middleware = async (ctx, next) => {
   // me via 204 status that they would not
   // treat as 404
   if (!ctx.body && ctx.status !== 204) {
+    Metrics.increment("request.errored");
+
     ctx.status = 404;
     await ctx.render("404");
   }
@@ -50,6 +61,8 @@ export const handelValidationErrors: Middleware = async (ctx, next) => {
   try {
     await next();
   } catch (e: any) {
+    Metrics.increment("request.errored.validation");
+
     if (e.errors) {
       const msg = e.errors.reduce(
         (a: string, c: { property: string; message: string }) =>
@@ -123,6 +136,8 @@ export const authenticateByCookie: Middleware = async (ctx, next) => {
 
 export const mustBeAuthenticated: Middleware = (ctx, next) => {
   if (!ctx.user) {
+    Metrics.increment("request.errored.authorization");
+
     return ctx.redirect("/login");
   } else {
     return next();

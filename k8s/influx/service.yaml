@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: influx
+spec:
+  selector:
+    app: influx
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telegraf
+spec:
+  selector:
+    app: telegraf
+  type: NodePort
+  ports:
+    - protocol: UDP
+      port: 8125
+      targetPort: 8125
