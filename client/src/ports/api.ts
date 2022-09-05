@@ -119,12 +119,14 @@ export const helpItems = {
       group_id,
       user_id,
       image,
+      end_at,
     }: {
       title: string;
       description: string;
       group_id: string;
       user_id: string;
       image: string;
+      end_at: string;
     },
     authToken: string
   ) =>
@@ -136,6 +138,7 @@ export const helpItems = {
           description,
           group_id,
           image,
+          end_at,
           creator_id: user_id,
         },
         {
