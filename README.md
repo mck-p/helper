@@ -11,11 +11,13 @@ and to help others do the same.
 
 ## Screenshots/
 
-![Dashboard](./artifacts/Screenshot%20from%202022-08-24%2018.12.24.png)
+![User Dashboard](./artifacts/Screenshot%20from%202022-08-24%2018.12.24.png)
 
 ![Create Help Item](./artifacts/Screenshot%20from%202022-08-24%2018.13.02.png)
 
 ![View Help Item](./artifacts/Screenshot%20from%202022-08-24%2018.12.50.png)
+
+![Group Dashboard with Browser Darkmode](./artifacts/Screenshot%20from%202022-09-06%2011.41.58.png)
 
 ## Development
 
