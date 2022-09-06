@@ -1,4 +1,4 @@
-import type { Middleware } from "koa";
+import type { Context, Middleware } from "koa";
 import { verify } from "jsonwebtoken";
 
 import { format, formatDistanceToNow } from "date-fns";
@@ -161,6 +161,25 @@ export const formatters: Middleware = (ctx, next) => {
       formatDistanceToNow,
     },
   };
+
+  return next();
+};
+
+const getAuthenticationToken = (ctx: Context) =>
+  ctx.cookies.get("authentication") || "";
+
+export const transformSlugToGroup: Middleware = async (ctx, next) => {
+  const group = await API.groups.getBySlug(
+    ctx.params.slug,
+    getAuthenticationToken(ctx)
+  );
+
+  if (!group) {
+    // 404
+    return;
+  }
+
+  ctx.state.group = group;
 
   return next();
 };

@@ -1,0 +1,101 @@
+<header id="site-header">
+  <a href="/<%= group.slug %>/dashboard">
+    <h2><%= group.name %> Dashboard</h2>
+  </a>
+  <nav id="site-nav">
+    <% if (isAdmin) { %>
+    <a href="/<%= group.slug %>/admin">
+      Admin Dashboard
+    </a>
+    <% } %>
+    <a href="/<%= group.slug %>/dashboard">
+      <%= group.name %> Dashboard
+    </a>
+    <a href="/logout">
+      Logout
+    </a>
+  </nav>
+</header>
+<main class="grid-y grid-padding-y full group edit">
+  <form action="/functions/update-group" method="POST" enctype="multipart/form-data">
+    <header>
+      <div class="profile-avatar" alt="<%= group.meta.name %> Avatar"
+        style="background:
+          url('<%= group.meta.avatar ? `${group.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size: cover;"
+        id="group-avatar">
+      </div>
+      <div class="avatar-edit">
+        <label for="avatar" class="button">
+          Change Avatar Image
+        </label>
+        <input type="file" name="avatar" id="avatar" class="show-for-sr" />
+      </div>
+    </header>
+
+    <div class="group-info">
+      <div class="input_group">
+        <label for="name">
+          Group Name
+        </label>
+        <input type="text" value="<%= group.name %>" name="name" id="name" />
+      </div>
+      <div class="input_group">
+        <label for="name">
+          Group Slug
+        </label>
+        <input type="text" value="<%= group.slug %>" name="slug" id="slug" />
+      </div>
+      <div class="input_group">
+        <label for="description">
+          Group Description
+        </label>
+        <textarea name="description" id="description">
+          <%= group.description %>
+        </textarea>
+      </div>
+      <div class="input_group">
+        <label for="phone">
+          Contact Phone
+        </label>
+        <input type="text" value="<%= group.meta.phone %>" name="phone" id="phone" placeholder="(555) 432-1234" />
+      </div>
+      <div class="input_group">
+        <label for="email">
+          Contact Email
+        </label>
+        <input type="email" value="<%= group.meta.email %>" name="email" id="email" />
+      </div>
+      <div class="input_group">
+        <label for="address">
+          Contact Address
+        </label>
+        <textarea name="address" id="address" rows="3"><%= group.meta.address %></textarea>
+      </div>
+    </div>
+    <input value=<%= group.id %> name="group_id" hidden />
+    <button type="submit" class="button submit">
+      Update Group Information
+    </button>
+  </form>
+</main>
+<script>
+  window.addEventListener('load', () => {
+    const avatarInput = document.getElementById('avatar')
+    const avatarOutput = document.getElementById('group-avatar')
+
+    avatarInput.addEventListener('change', e => {
+      const files = e.target.files
+
+      // FileReader support
+      if (FileReader && files && files.length) {
+        var fr = new FileReader();
+        fr.onload = function () {
+          console.log('')
+          avatarOutput.style.background = `url('${fr.result}') center center no-repeat`;
+          avatarOutput.style.backgroundSize = 'cover';
+        }
+        fr.readAsDataURL(files[0]);
+      }
+    })
+  })
+</script>

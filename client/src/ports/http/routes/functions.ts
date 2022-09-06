@@ -342,6 +342,36 @@ functions
 
       await ctx.redirect(`/profile`);
     }
+  )
+  .post(
+    "/update-group",
+    Middleware.mustBeAuthenticated,
+    upload.single("avatar"),
+    async (ctx) => {
+      const form = ctx.request.body;
+
+      const group = await API.groups.getById(
+        form.group_id,
+        getAuthenticationToken(ctx)
+      );
+
+      if (ctx.request.file) {
+        if (group.meta.avatar) {
+          deletePreviousSpaceImage(group.meta.avatar);
+        }
+      }
+
+      await API.groups.updateGroupInfo(
+        group.id,
+        {
+          ...form,
+          avatar: (ctx.request?.file as any)?.location,
+        },
+        getAuthenticationToken(ctx)
+      );
+
+      await ctx.redirect(`/${group.slug}/admin`);
+    }
   );
 
 export default functions;

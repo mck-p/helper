@@ -1,9 +1,7 @@
 import { Knex } from "knex";
 import validate from "@app/shared/validate";
-import * as Env from "@app/shared/env";
 
 import type { Schema } from "@app/shared/validate";
-import { string } from "getenv";
 
 class GroupWithSlugAlreadyExists extends Error {
   statusCode = 400;
@@ -56,6 +54,80 @@ const creationSchema: Schema = {
       required: false,
       description: "A markdown description of the specific group.",
     },
+    meta: {
+      type: "object",
+      properties: {
+        avatar: {
+          type: "string",
+          required: false,
+          description: "The URL for the Avatar to use for this profile",
+        },
+        email: {
+          type: "string",
+          required: false,
+          description: "The contact Email to use for this group",
+        },
+        phone: {
+          type: "string",
+          required: false,
+          description: "The contact Phone number to use for this group",
+        },
+        address: {
+          type: "string",
+          required: false,
+          description: "The contact Address to use for this group",
+        },
+      },
+    },
+  },
+};
+
+const updateSchema: Schema = {
+  id: "$GroupUpdate",
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+      required: false,
+      description:
+        "A human-readable name for the group. Not unique across the system.",
+    },
+    slug: {
+      type: "string",
+      required: false,
+      description:
+        "The URL Slug to use for this group. Unique across the system",
+    },
+    description: {
+      type: "string",
+      required: false,
+      description: "A markdown description of the specific group.",
+    },
+    meta: {
+      type: "object",
+      properties: {
+        avatar: {
+          type: "string",
+          required: false,
+          description: "The URL for the Avatar to use for this profile",
+        },
+        email: {
+          type: "string",
+          required: false,
+          description: "The contact Email to use for this group",
+        },
+        phone: {
+          type: "string",
+          required: false,
+          description: "The contact Phone number to use for this group",
+        },
+        address: {
+          type: "string",
+          required: false,
+          description: "The contact Address to use for this group",
+        },
+      },
+    },
   },
 };
 
@@ -64,6 +136,12 @@ export interface Group {
   slug: string;
   name: string;
   description?: string;
+  meta: {
+    avatar?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+  };
 }
 
 class GroupsRepo {
@@ -71,6 +149,7 @@ class GroupsRepo {
 
   schemas = {
     create: creationSchema,
+    update: updateSchema,
   };
 
   constructor(conn: Knex) {
@@ -218,6 +297,94 @@ class GroupsRepo {
 
       throw err;
     }
+  }
+
+  async userIsAdminOfGroup(userId: string, groupId: string) {
+    const roles = await this.#connection
+      .from("roles")
+      .select("*")
+      .whereIn("name", ["group-admin", "site-admin"]);
+
+    const userRoles = await this.#connection
+      .from("user_roles")
+      .whereIn(
+        "role_id",
+        roles.map(({ id }) => id)
+      )
+      .andWhere({
+        user_id: userId,
+      })
+      .select("user_id as user", "group_id as group");
+
+    return (
+      roles.some(({ name }) => name === "site-admin") ||
+      userRoles.some(({ group }) => group === groupId)
+    );
+  }
+
+  async updateById(
+    groupId: string,
+    input: {
+      email?: string;
+      slug?: string;
+      description?: string;
+      phone?: string;
+      address?: string;
+      avatar?: string;
+      name?: string;
+    }
+  ) {
+    validate(input, this.schemas.update);
+
+    const update: Partial<Group> = {};
+
+    if (input.slug) {
+      update.slug = input.slug;
+    }
+
+    if (input.description) {
+      update.description = input.description;
+    }
+
+    if (input.name) {
+      update.name = input.name;
+    }
+
+    if (input.address || input.avatar || input.email || input.phone) {
+      const { meta: oldMeta } = await this.#connection
+        .from("groups")
+        .where({ id: groupId })
+        .select("id", "meta")
+        .first();
+
+      update.meta = oldMeta as Group["meta"];
+
+      if (input.address) {
+        update.meta.address = input.address;
+      }
+
+      if (input.avatar) {
+        update.meta.avatar = input.avatar;
+      }
+
+      if (input.email) {
+        update.meta.email = input.email;
+      }
+
+      if (input.phone) {
+        update.meta.phone = input.phone;
+      }
+    }
+
+    const [updated] = await this.#connection
+      .from("groups")
+      .where({
+        id: groupId,
+      })
+      .update(update)
+      .returning("*");
+
+    return updated;
   }
 }
 

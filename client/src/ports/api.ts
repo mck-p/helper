@@ -31,6 +31,18 @@ export const groups = {
     axios
       .post(`${Env.api.urlBase}/groups/request-demo`, { email })
       .then(APIDewrap),
+  isUserAdmin: (userId: string, groupId: string) =>
+    axios
+      .get(`${Env.api.urlBase}/groups/${groupId}/is-user-admin/${userId}`)
+      .then(APIDewrap),
+  updateGroupInfo: (groupId: string, update: any, authToken: string) =>
+    axios
+      .patch(`${Env.api.urlBase}/groups/${groupId}`, update, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then(APIDewrap),
 };
 
 export const users = {

@@ -44,6 +44,19 @@ groupRouter
 
     ctx.state.data = data;
   })
+  .patch("/:id", async (ctx) => {
+    const data = await groupRepo.updateById(ctx.params.id, ctx.request.body);
+
+    ctx.state.data = data;
+  })
+  .get("/:id/is-user-admin/:user_id", async (ctx) => {
+    const data = await groupRepo.userIsAdminOfGroup(
+      ctx.params.id,
+      ctx.params.user_id
+    );
+
+    ctx.state.data = data;
+  })
   .get("/:id/help-items", async (ctx) => {
     const data = await groupRepo.getHelpItemsForGroup(ctx.params.id);
 

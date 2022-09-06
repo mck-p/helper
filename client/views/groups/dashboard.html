@@ -1,11 +1,16 @@
 <header id="site-header">
   <a href="/<%= group.slug %>/dashboard">
-    <h2>Helper</h2>
+    <h2><%= group.name %> Dashboard</h2>
   </a>
   <nav id="site-nav">
     <a href="/<%= group.slug %>/help-items/create">
       Ask for Help
     </a>
+    <% if (isAdmin) { %>
+      <a href="/<%= group.slug %>/admin">
+        Admin Dashboard
+      </a>
+    <% } %>
     <a href="/dashboard">
       User Dashboard
     </a>
@@ -14,8 +19,14 @@
     </a>
   </nav>
 </header>
-<main class="grid-y grid-padding-y full dashboard">
-  <h2 class="text-center">Welcome back to the <%= group.name %> Group!</h2>
+<main class="grid-y grid-padding-y full dashboard group">
+  <header>
+    <div class="group-avatar" alt="<%= group.meta.name %> Avatar"
+      style="background: url('<%= group.meta.avatar ? `${group.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size: cover;"
+      id="group-avatar">
+    </div>
+      <h2 class="text-center">Welcome back to the <%= group.name %> Group!</h2>
+  </header>
   <div class="callout primary">
     <%- group.description %>
   </div>

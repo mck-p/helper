@@ -190,7 +190,8 @@ footer p {
   overflow: hidden;
 }
 
-.profile-avatar {
+.profile-avatar,
+.group-avatar {
   width: 250px;
   height: 250px;
   
@@ -202,12 +203,13 @@ footer p {
   margin-top: 2rem;
 }
 
-.profile {
+.profile, .group {
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.profile header {
+.profile header,
+.group header {
   width: 100%;
   display: flex;
   flex-direction: column;

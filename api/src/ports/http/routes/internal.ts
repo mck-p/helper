@@ -24,6 +24,8 @@ const sqlDir = path.resolve(
 const migrations = [
   path.join(sqlDir, "tables.sql"),
   path.join(sqlDir, "permissions.sql"),
+  path.join(sqlDir, "group-roles.sql"),
+  path.join(sqlDir, "group-meta.sql"),
 ];
 
 const internalRouter = new Router().use(BodyParser());

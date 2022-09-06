@@ -1,0 +1,62 @@
+<header id="site-header">
+  <a href="/<%= group.slug %>/admin">
+    <h2><%= group.name %> Admin</h2>
+  </a>
+  <nav id="site-nav">
+    <a href="/<%= group.slug %>/dashboard">
+      Group Dashboard
+    </a>
+    <a href="/<%= group.slug %>/admin/edit">
+      Edit Group
+    </a>
+    <a href="/logout">
+      Logout
+    </a>
+  </nav>
+</header>
+<main class="grid-y grid-padding-y full dashboard group">
+  <header>
+    <div class="group-avatar" alt="<%= group.meta.name %> Avatar"
+      style="background: url('<%= group.meta.avatar ? `${group.meta.avatar}` : "https://dominicanewsonline.com/news/wp-content/uploads/2020/04/Sanders-3.jpg" %>') center center no-repeat; background-size: cover;"
+      id="group-avatar">
+    </div>
+  <h2 class="text-center"><%= group.name %></h2>
+  <h3 class="text-center">Group Admin Panel</h3>
+
+  </header>
+  <div class="callout primary">
+    <p class="centered">
+      Thank you for helping others help others!
+    </p>
+  </div>
+  <ul class="grid-x grid-margin-x small-up-1 accordion" data-accordion data-allow-all-closed="true"
+    data-deep-link="true" data-update-history="true" data-deep-link-smudge="true" data-deep-link-smudge-delay="500">
+    <li class="cell card accordion-item" data-accordion-item>
+      <a href="#join-requests" class="accordian-title">
+        <div class="card-divider text-center">
+          <h3>Recent Group Join Requests</h3>
+        </div>
+      </a>
+      <div class="card-section accordion-content" data-tab-content id="join-requests">
+        <h5>Join Requests coming soon!</h5>
+      </div>
+    </li>
+    <li class="cell card accordion-item" data-accordion-item>
+      <a href="#recent-announcements" class="accordian-title">
+        <div class="card-divider text-center">
+          <h3>Recent Announcements</h3>
+        </div>
+      </a>
+      <div class="card-section accordion-content" data-tab-content id="recent-announcements">
+        <h5>Announcements coming soon!</h5>
+      </div>
+    </li>
+  </ul>
+</main>
+<script>
+  window.addEventListener('load', () => {
+    $('.accordion').each((_, el) => {
+      new Foundation.Accordion($(el))
+    })
+  })
+</script>
