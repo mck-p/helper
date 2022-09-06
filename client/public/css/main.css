@@ -169,6 +169,13 @@ footer p {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-flow: wrap;
+}
+
+@media screen and (max-width: 950px) {
+  #site-header {
+    flex-direction: column;
+  }
 }
 
 #site-header a {
