@@ -18,6 +18,9 @@
   <% } %>
   <h1><%= helpItem.title %></h1>
   <%- helpItem.description %>
+  <% if (helpItem.end_at) { %>
+    <h3 class="help-item-time">Ends <%= formatters.date.formatDistanceToNow(new Date(formatters.date.formatISO(new Date(helpItem.end_at))), { addSuffix: true }) %></h3>
+  <% } %>
   <h2>Assigned Helpers</h2>
   <ul>
     <% for (const helper of helpers) { %>
@@ -49,7 +52,7 @@
       <input hidden name="group_id" value="<%= helpItem.group_id %>" />
       <input hidden name="help_item" value="<%= helpItem.id %>" />
 
-      <button class="button alert" type="submit">
+      <button class="button alert" type="submit" onclick="if (!confirm('Are you sure you want to delete \'<%= helpItem.title %>\'? This cannot be undone.')) { event.preventDefault() }">
         Revoke Request for Help
       </button>
     </form>

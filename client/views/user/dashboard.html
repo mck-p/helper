@@ -52,7 +52,7 @@
                 <h4><%- helpItem.title %></h4>
                 <% if (helpItem.end_at) { %>
                 <span>
-                  <%= formatters.date.formatDistanceToNow(new Date(helpItem.end_at), { addSuffix: true }) %>
+                  <%= formatters.date.formatDistanceToNow(new Date(formatters.date.formatISO(new Date(helpItem.end_at))), { addSuffix: true }) %>
                 </span>
                 <% } %>
               </div>

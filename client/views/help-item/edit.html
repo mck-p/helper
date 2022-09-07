@@ -64,7 +64,8 @@
       <label for="help_time">
         When is this needed?
       </label>
-      <input type="datetime-local" name="end_at" id="help_time" value="<%= helpItem.end_at %>" />
+      <input type="datetime-local" id="help_time" value="<%= helpItem.end_at.replace('Z', '') %>"  />
+      <input name="end_at" hidden id="end_at" value="<% helpItem.end_at %>"/>
     </div>
 
     <input value=<%= group.id %> name="group_id" hidden />
@@ -78,6 +79,42 @@
 </main>
 <script>
   window.addEventListener('load', () => {
+    const endAtEl = document.getElementById('end_at')
+    const endAtInputEl = document.getElementById('help_time')
+
+    if (endAtInputEl.value) {
+      const d = new Date(endAtInputEl.value + 'Z')
+      const [month,day,year] = d.toLocaleDateString().split('/')
+      console.log(`${year.padStart(4, '0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${d.toLocaleTimeString('en-us', { hour12: false })}`)
+      endAtInputEl.value = `${year.padStart(4, '0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${d.toLocaleTimeString('en-us', { hour12: false }) }`
+    }
+
+    function toIsoLocalTime(value) {
+      if (value instanceof Date === false) {
+        value = new Date();
+      }
+
+      const off = value.getTimezoneOffset() * -1;
+      const del = value.getMilliseconds() ? 'Z' : '.';
+      value = new Date(value.getTime() + off * 60000);
+
+      return value
+        .toISOString()
+        .split(del)[0]
+        .replace('T', ' ')
+        + ' '
+        + (off < 0 ? '-' : '+')
+        + ('0' + Math.abs(Math.floor(off / 60))).substr(-2)
+        + ':'
+        + ('0' + Math.abs(off % 60)).substr(-2);
+    }
+
+    endAtInputEl.addEventListener('change', e => {
+      const date = new Date(e.target.value)
+      endAtEl.value = toIsoLocalTime(date)
+      console.log(endAtEl.value)
+    })
+  
     const avatarInput = document.getElementById('image')
     const avatarOutput = document.getElementById('image-output')
 

@@ -1,7 +1,6 @@
 import Router from "@koa/router";
 import * as API from "@app/ports/api";
 import * as Middleware from "@app/ports/http/middleware";
-import * as HelpItems from "@app/domains/help-items";
 import * as Authorization from "@app/ports/http/authorization";
 import { Context } from "koa";
 
@@ -68,7 +67,7 @@ groupPages
     `);
 
     await ctx.render("help-item/edit", {
-      helpItem: HelpItems.clean(helpItem),
+      helpItem,
     });
   })
   .get("/:slug/help-items/:id", async (ctx) => {
@@ -96,7 +95,7 @@ groupPages
     );
 
     await ctx.render("help-item/single", {
-      helpItem: HelpItems.clean(helpItem),
+      helpItem,
       user: ctx.user,
       helpers,
     });
@@ -207,8 +206,8 @@ pages
 
     await ctx.render("user/dashboard", {
       user: ctx.user,
-      upcomingHelpItems: helpItems.map(HelpItems.clean),
-      upcomingHelpRequests: helpRequests.map(HelpItems.clean),
+      upcomingHelpItems: helpItems,
+      upcomingHelpRequests: helpRequests,
       groups: {
         byId: groups.reduce(
           (a: any, c: any) => ({

@@ -1,7 +1,7 @@
 import type { Context, Middleware } from "koa";
 import { verify } from "jsonwebtoken";
 
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, formatISO } from "date-fns";
 
 import Metrics from "@app/ports/metrics";
 
@@ -159,6 +159,18 @@ export const formatters: Middleware = (ctx, next) => {
     date: {
       format,
       formatDistanceToNow,
+      formatISO,
+      transformForDateTimeInput: (end_at: string) => {
+        console.log(end_at);
+        const [date, time, offset] = end_at.split(" ");
+        const offsetInMinutes = Math.floor(Number(offset[0]) * 60);
+
+        const d = new Date(`${date}T${time}`);
+
+        d.setMinutes(d.getMinutes() + offsetInMinutes);
+
+        return d.toString();
+      },
     },
   };
 
