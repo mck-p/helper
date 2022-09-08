@@ -385,7 +385,7 @@ functions
 
       const group = await API.groups.getById(form.group_id, authToken);
 
-      await ctx.redirect(`/${group.slug}/dashboard`);
+      await ctx.redirect(`/${group.slug}/help-items/${form.help_item}`);
     }
   )
   .post(
