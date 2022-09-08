@@ -372,6 +372,36 @@ functions
 
       await ctx.redirect(`/${group.slug}/admin`);
     }
+  )
+  .post(
+    "/end-help-item",
+    Middleware.mustBeAuthenticated,
+    Body(),
+    async (ctx) => {
+      const form = ctx.request.body;
+      const authToken = getAuthenticationToken(ctx);
+
+      await API.helpItems.update(form.help_item, { done: true }, authToken);
+
+      const group = await API.groups.getById(form.group_id, authToken);
+
+      await ctx.redirect(`/${group.slug}/dashboard`);
+    }
+  )
+  .post(
+    "/restart-help-item",
+    Middleware.mustBeAuthenticated,
+    Body(),
+    async (ctx) => {
+      const form = ctx.request.body;
+      const authToken = getAuthenticationToken(ctx);
+
+      await API.helpItems.update(form.help_item, { done: false }, authToken);
+
+      const group = await API.groups.getById(form.group_id, authToken);
+
+      await ctx.redirect(`/${group.slug}/help-items/${form.help_item}`);
+    }
   );
 
 export default functions;

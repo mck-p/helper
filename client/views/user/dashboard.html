@@ -106,6 +106,46 @@
       </div>
       <% } %>
     </li>
+
+    <li class="cell card accordion-item" data-accordion-item>
+      <a href="#finished-requests" class="accordian-title">
+        <div class="card-divider text-center">
+          <h3>Past Help Requests</h3>
+        </div>
+      </a>
+      <% if (finishedHelpRequests.length) { %>
+      <div class="card-section accordion-content accordion grid-x small-up-1 large-up-3" data-tab-content data-accordion
+        data-multi-expand="true" data-allow-all-closed="true" id="finished-requests">
+    
+        <% finishedHelpRequests.forEach(helpItem => { %>
+        <div class="card accordion-item" data-accordion-item>
+          <a href="#" class="accordian-title">
+            <div class="card-divider help-item-header">
+              <h4><%- helpItem.title %></h4>
+              <% if (helpItem.end_at) { %>
+              <span>
+                <%= formatters.date.formatDistanceToNow(new Date(helpItem.end_at), { addSuffix: true }) %>
+              </span>
+              <% } %>
+            </div>
+          </a>
+          <div class="card-section  accordion-content" data-tab-content>
+            <%- helpItem.description %>
+            <a href="/<%- groups.byId[helpItem.group_id].slug %>/help-items/<%- helpItem.id %>" class="button">
+              See Item
+            </a>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <% } else { %>
+        <div class="text-center card-section accordion-content grid-x small-up-1" data-tab-content id="finished-requests">
+          <h5>You have no finished Help Requests. Be sure to mark them done once you have received the help you need</h5>
+        </div>
+      <% } %>
+    </li>
+
+    
     
     <li class="cell card accordion-item" data-accordion-item>
       <a href="#my-groups" class="accordian-title">

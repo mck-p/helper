@@ -41,7 +41,7 @@
     <input hidden name="help_item" value="<%- helpItem.id %>"/>
     <input hidden name="group_id" value="<%- helpItem.group_id %>" />
 
-    <button class="button submit" type="submit">
+    <button class="button success submit" type="submit">
       Offer to be a Helper
     </button>
   </form>
@@ -56,6 +56,29 @@
         Revoke Request for Help
       </button>
     </form>
+    <% if (helpItem.done) { %>
+      <form action="/functions/restart-help-item" method="POST">
+        <input hidden name="user_id" value="<%= user.id %>" />
+        <input hidden name="group_id" value="<%= helpItem.group_id %>" />
+        <input hidden name="help_item" value="<%= helpItem.id %>" />
+      
+        <button class="button alert" type="submit"
+          onclick="if (!confirm('Are you sure you want to reopen \'<%= helpItem.title %>\'?')) { event.preventDefault() }">
+          Re-Open Help Request
+        </button>
+      </form>
+    <% } else { %>
+      <form action="/functions/end-help-item" method="POST">
+        <input hidden name="user_id" value="<%= user.id %>" />
+        <input hidden name="group_id" value="<%= helpItem.group_id %>" />
+        <input hidden name="help_item" value="<%= helpItem.id %>" />
+      
+        <button class="button" type="submit"
+          onclick="if (!confirm('Are you sure you want to mark \'<%= helpItem.title %>\' done?')) { event.preventDefault() }">
+          Mark Request Done
+        </button>
+      </form>
+    <% } %>
     <a href="/<%= group.slug %>/help-items/<%= helpItem.id %>/edit" class="button">
       Edit Request for Help
     </a>

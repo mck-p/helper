@@ -37,6 +37,23 @@ helpItemsRouter
     ctx.state.data = data;
   })
   .post(
+    "/:id/done",
+    Middleware.mustBeAuthenticated,
+    Middleware.ensureUserCanPerformAction((ctx) => ({
+      object: `HELP_ITEM::${ctx.params.id}`,
+      action: "COMPLETE",
+    })),
+    async (ctx) => {
+      const data = await helpItemRepo.updateById(ctx.params.id, {
+        done: true,
+      });
+
+      ctx.state.data = data;
+
+      ctx.state.statusCode = 201;
+    }
+  )
+  .post(
     "/:id/add-helper/:user_id",
     Middleware.mustBeAuthenticated,
     Middleware.ensureUserCanPerformAction((ctx) => ({

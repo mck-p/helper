@@ -266,9 +266,15 @@ class UserRepo {
       }
     }
 
+    if (query.done === "true") {
+      args.done = true;
+    } else {
+      args.done = false;
+    }
+
     return this.#connection
       .from("helpers")
-      .where({ user_id: userId })
+      .where({ user_id: userId, done: args.done })
       .andWhere((builder) => {
         if (args.after) {
           builder.where("end_at", ">", args.after);
@@ -295,9 +301,15 @@ class UserRepo {
       }
     }
 
+    if (query.done === "true") {
+      args.done = true;
+    } else {
+      args.done = false;
+    }
+
     return this.#connection
       .from("help_items")
-      .where({ creator_id: userId })
+      .where({ creator_id: userId, done: args.done })
       .andWhere((builder) => {
         if (args.after) {
           builder.where("end_at", ">", args.after);

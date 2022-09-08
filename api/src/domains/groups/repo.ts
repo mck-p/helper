@@ -199,11 +199,16 @@ class GroupsRepo {
       .select("users.id", "users.email", "users.meta");
   }
 
-  getHelpItemsForGroup(groupId: string) {
+  getHelpItemsForGroup(groupId: string, query: { [x: string]: any }) {
+    const args = {
+      done: query.done === "true" ? true : false,
+    };
+
     return this.#connection
       .from("help_items")
       .where({
         group_id: groupId,
+        ...args,
       })
       .select("*");
   }

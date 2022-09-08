@@ -192,13 +192,22 @@ export const helpItems = {
         },
       })
       .then(APIDewrap),
-  getHelpItemsForGroup: (group_id: string, authToken: string) =>
+  getHelpItemsForGroup: (
+    group_id: string,
+    authToken: string,
+    queryString?: string
+  ) =>
     axios
-      .get(`${Env.api.urlBase}/groups/${group_id}/help-items`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      })
+      .get(
+        `${Env.api.urlBase}/groups/${group_id}/help-items${
+          queryString ? `?${queryString}` : ""
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      )
       .then(APIDewrap),
   delete: (helpItem: string, authToken: string) =>
     axios

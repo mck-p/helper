@@ -26,6 +26,7 @@ const migrations = [
   path.join(sqlDir, "permissions.sql"),
   path.join(sqlDir, "group-roles.sql"),
   path.join(sqlDir, "group-meta.sql"),
+  path.join(sqlDir, "finish-help-item.sql"),
 ];
 
 const internalRouter = new Router().use(BodyParser());

@@ -198,16 +198,28 @@ pages
       title: "Dashboard",
     });
 
-    const [helpItems, groups, helpRequests] = await Promise.all([
-      API.users.getHelpItemsByUserId(ctx.user.id, `after=now&limit=10`),
-      API.users.getGroupsByUserId(ctx.user.id),
-      API.users.getHelpRequesrtsByUserId(ctx.user.id, `after=now&limit=10`),
-    ]);
+    const [helpItems, groups, helpRequests, finishedHelpRequests] =
+      await Promise.all([
+        API.users.getHelpItemsByUserId(
+          ctx.user.id,
+          `after=now&limit=10&done=false`
+        ),
+        API.users.getGroupsByUserId(ctx.user.id),
+        API.users.getHelpRequesrtsByUserId(
+          ctx.user.id,
+          `after=now&limit=10&done=false`
+        ),
+        API.users.getHelpRequesrtsByUserId(
+          ctx.user.id,
+          `after=now&limit=10&done=true`
+        ),
+      ]);
 
     await ctx.render("user/dashboard", {
       user: ctx.user,
       upcomingHelpItems: helpItems,
       upcomingHelpRequests: helpRequests,
+      finishedHelpRequests,
       groups: {
         byId: groups.reduce(
           (a: any, c: any) => ({

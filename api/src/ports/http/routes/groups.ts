@@ -58,7 +58,7 @@ groupRouter
     ctx.state.data = data;
   })
   .get("/:id/help-items", async (ctx) => {
-    const data = await groupRepo.getHelpItemsForGroup(ctx.params.id);
+    const data = await groupRepo.getHelpItemsForGroup(ctx.params.id, ctx.query);
 
     ctx.state.data = data;
   })
