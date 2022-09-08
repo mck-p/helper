@@ -82,10 +82,18 @@
     const endAtEl = document.getElementById('end_at')
     const endAtInputEl = document.getElementById('help_time')
 
+    // If we have already given this a value it means
+    // that we need to transform a UTC value into a locale
+    // string value that the datetime-local input will take
     if (endAtInputEl.value) {
+      // <datetime> + Z === UTC time
       const d = new Date(endAtInputEl.value + 'Z')
-      const [month,day,year] = d.toLocaleDateString().split('/')
-      console.log(`${year.padStart(4, '0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${d.toLocaleTimeString('en-us', { hour12: false })}`)
+      // get the date in month/day/year format and parse it
+      const [month,day,year] = d.toLocaleDateString('en-US').split('/')
+
+      // The datetime-local input takes in 
+      // https://developer.mozilla.org/en-US/docs/Web/HTML/Date_and_time_formats#local_date_and_time_strings
+      // strings so let's create one
       endAtInputEl.value = `${year.padStart(4, '0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${d.toLocaleTimeString('en-us', { hour12: false }) }`
     }
 
